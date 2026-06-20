@@ -462,3 +462,19 @@ td { color: var(--ink-soft); }
 .endpoint-tag.post { background: #E7EFE9; color: var(--teal); }
 .endpoint-tag.get { background: #E3ECF5; color: #2C5E8A; }
 .endpoint-tag.delete { background: var(--rust-soft); color: var(--rust); }
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin:0;
+    padding:0;
+}
+
+.container,
+.main,
+.content{
+    width:100%;
+    max-width:100%;
+    padding:16px;
+}
