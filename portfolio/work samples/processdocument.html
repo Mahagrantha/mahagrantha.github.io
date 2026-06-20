@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Poche — Process Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C1F26;
+    --teal:#285C4D;
+    --teal-bg:#E7EFE9;
+    --rust:#B5562B;
+    --rust-bg:#F5E8E0;
+    --muted:#6B7077;
+    --paper:#FBFAF7;
+    --paper-raised:#FFFFFF;
+    --border:#E2DFD6;
+    --border-strong:#CFCBBF;
+    --gutter-w:280px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",Arial,sans-serif;font-size:16px;line-height:1.65;}
+  a{color:var(--teal);}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.9em;color:var(--teal);}
+
+  .shell{display:grid;grid-template-columns:var(--gutter-w) 1fr;min-height:100vh;}
+  .sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--paper-raised);border-right:1px solid var(--border);padding:32px 0 40px;}
+  .brand{padding:0 28px 18px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+  .brand .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;color:var(--rust);font-weight:500;}
+  .brand h1{font-family:"Fraunces",serif;font-size:30px;font-weight:600;margin:6px 0 4px;}
+  .brand .sub{font-size:13px;color:var(--muted);}
+  .brand .meta{margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+
+  .switcher{display:flex;gap:6px;padding:14px 28px 18px;border-bottom:1px solid var(--border);margin-bottom:10px;flex-wrap:wrap;}
+  .switcher a{font-family:"IBM Plex Mono",monospace;font-size:11px;padding:5px 10px;border:1px solid var(--border-strong);border-radius:14px;text-decoration:none;color:var(--muted);}
+  .switcher a.current{background:var(--ink);color:#FBFAF7;border-color:var(--ink);}
+  .switcher a:hover:not(.current){background:var(--teal-bg);color:var(--teal);}
+
+  nav.toc{padding:0 14px;}
+  nav.toc a{display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink);padding:7px 14px;border-radius:4px;font-size:14px;border-left:2px solid transparent;}
+  nav.toc a:hover{background:var(--teal-bg);}
+  nav.toc a.active{background:var(--teal-bg);border-left:2px solid var(--teal);color:var(--teal);font-weight:500;}
+  nav.toc .num{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);min-width:18px;}
+  nav.toc a.active .num{color:var(--teal);}
+
+  .sidebar-footer{padding:20px 28px 0;margin-top:18px;border-top:1px solid var(--border);font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+
+  main{padding:64px 64px 120px;max-width:860px;}
+  .cover{padding-bottom:48px;margin-bottom:56px;border-bottom:1px solid var(--border);}
+  .cover .tag{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;color:var(--rust);font-weight:500;}
+  .cover h1{font-family:"Fraunces",serif;font-size:50px;font-weight:600;margin:10px 0 8px;line-height:1.05;}
+  .cover .lede{font-size:18px;color:#3D4148;margin:0 0 18px;max-width:600px;}
+  .cover .howto{margin-top:24px;font-style:italic;color:var(--muted);font-size:14px;max-width:620px;border-top:1px solid var(--border);padding-top:18px;}
+
+  section.chapter{padding-top:24px;margin-bottom:64px;scroll-margin-top:32px;}
+  section.chapter .chapter-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--rust);letter-spacing:.1em;margin-bottom:6px;}
+  section.chapter h1{font-family:"Fraunces",serif;font-size:34px;font-weight:600;margin:0 0 10px;padding-bottom:14px;border-bottom:2px solid var(--ink);}
+  section.chapter .process-meta{display:flex;gap:22px;flex-wrap:wrap;margin:0 0 26px;font-size:13px;color:var(--muted);}
+  section.chapter .process-meta b{color:var(--ink);font-weight:500;}
+  section.chapter h2{font-size:21px;font-weight:600;margin:36px 0 14px;}
+  section.chapter h3{font-size:16px;font-weight:600;color:var(--teal);margin:24px 0 10px;}
+  section.chapter p{margin:0 0 14px;color:#3D4148;}
+  ul.bullets{margin:0 0 16px;padding-left:0;list-style:none;}
+  ul.bullets li{position:relative;padding-left:20px;margin-bottom:8px;color:#3D4148;}
+  ul.bullets li::before{content:"";position:absolute;left:4px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--teal);}
+
+  table{width:100%;border-collapse:collapse;margin:0 0 24px;font-size:14px;}
+  thead th{text-align:left;background:#F2F1ED;font-weight:600;padding:9px 12px;border:1px solid var(--border);}
+  tbody td{padding:9px 12px;border:1px solid var(--border);color:#3D4148;vertical-align:top;}
+  tbody tr:nth-child(even){background:#FCFCFA;}
+
+  .owner-pill{
+    display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;
+    padding:2px 9px;border-radius:12px;background:var(--teal-bg);color:var(--teal);white-space:nowrap;
+  }
+
+  .flow{margin:0 0 30px;border-left:2px solid var(--border-strong);padding-left:0;}
+  .flow-step{position:relative;padding:0 0 22px 30px;}
+  .flow-step:last-child{padding-bottom:2px;}
+  .flow-step::before{
+    content:"";position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;
+    background:var(--paper-raised);border:2px solid var(--teal);
+  }
+  .flow-step .step-title{font-weight:600;font-size:15px;margin-bottom:3px;}
+  .flow-step .step-owner{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--rust);margin-bottom:5px;}
+  .flow-step p{margin:0;font-size:14.5px;color:#3D4148;}
+
+  .callout{border-left:3px solid var(--teal);background:var(--teal-bg);padding:14px 18px;border-radius:0 6px 6px 0;margin:8px 0 28px;}
+  .callout.warn{border-left-color:var(--rust);background:var(--rust-bg);}
+  .callout .label{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--teal);margin-bottom:5px;}
+  .callout.warn .label{color:var(--rust);}
+  .callout p{margin:0;font-size:14.5px;color:#3D4148;}
+
+  footer.guide-footer{border-top:1px solid var(--border);margin-top:60px;padding-top:24px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;}
+
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--border);}
+    main{padding:40px 24px 80px;}
+    .cover h1{font-size:34px;}
+    section.chapter h1{font-size:26px;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="eyebrow">PROCESS DOCUMENTATION</div>
+      <h1>La Poche</h1>
+      <div class="sub">Ecommerce Management Platform</div>
+      <div class="meta">Operations Manual &nbsp;·&nbsp; June 2026</div>
+    </div>
+
+    <div class="switcher">
+      <a href="La_Poche_User_Guide.html">User guide</a>
+      <a href="La_Poche_API_Documentation.html">API reference</a>
+      <a href="La_Poche_Process_Documentation.html" class="current">Process docs</a>
+    </div>
+
+    <nav class="toc" id="toc">
+      <a href="#ch1"><span class="num">01</span><span>Purpose &amp; scope</span></a>
+      <a href="#ch2"><span class="num">02</span><span>Roles &amp; responsibilities</span></a>
+      <a href="#ch3"><span class="num">03</span><span>Order fulfillment</span></a>
+      <a href="#ch4"><span class="num">04</span><span>Product onboarding</span></a>
+      <a href="#ch5"><span class="num">05</span><span>Marketplace onboarding</span></a>
+      <a href="#ch6"><span class="num">06</span><span>Returns &amp; refunds</span></a>
+      <a href="#ch7"><span class="num">07</span><span>Inventory reconciliation</span></a>
+      <a href="#ch8"><span class="num">08</span><span>Settlement reconciliation</span></a>
+      <a href="#ch9"><span class="num">09</span><span>User on/offboarding</span></a>
+      <a href="#ch10"><span class="num">10</span><span>Escalation</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      La Poche — Process Documentation<br>support@lapoche.com
+    </div>
+  </aside>
+
+  <main>
+
+    <div class="cover">
+      <div class="tag">PROCESS DOCUMENTATION</div>
+      <h1>Operations manual</h1>
+      <p class="lede">Step-by-step internal workflows for the teams running day-to-day operations on La Poche — who owns each step, what triggers it, and how long it should take.</p>
+      <p class="howto">Each process below states its trigger, the owning role for every step, expected turnaround, and what to do when something falls outside the normal path. Pair this with the User Guide for where to click, and the API reference for automating any of these steps.</p>
+    </div>
+
+    <!-- 1. Purpose & Scope -->
+    <section class="chapter" id="ch1">
+      <div class="chapter-eyebrow">CHAPTER 01</div>
+      <h1>Purpose &amp; scope</h1>
+
+      <h2>Purpose</h2>
+      <p>This manual defines the standard operating procedures for teams using La Poche day to day. Where the User Guide explains what a screen does, this document explains what should happen, in what order, and who is responsible — so the same order, return, or product launch is handled the same way regardless of who's on shift.</p>
+
+      <h2>Scope</h2>
+      <p>Covers order fulfillment, product and marketplace onboarding, returns, inventory and settlement reconciliation, user lifecycle management, and escalation paths. It does not cover marketing, supplier negotiation, or warehouse layout — those sit outside La Poche.</p>
+
+      <div class="callout">
+        <div class="label">HOW TO READ THIS DOCUMENT</div>
+        <p>Each process is shown as a sequence of steps. Every step names the role responsible and the expected turnaround time, so handoffs between teams are unambiguous.</p>
+      </div>
+    </section>
+
+    <!-- 2. Roles -->
+    <section class="chapter" id="ch2">
+      <div class="chapter-eyebrow">CHAPTER 02</div>
+      <h1>Roles &amp; responsibilities</h1>
+      <p>These map directly to the roles configured in User Management — see Chapter 9 of the User Guide.</p>
+
+      <table>
+        <thead><tr><th style="width:24%">Role</th><th>Owns</th></tr></thead>
+        <tbody>
+          <tr><td>Administrator</td><td>System configuration, user accounts, marketplace connections, escalation decisions</td></tr>
+          <tr><td>Sales Executive</td><td>Order confirmation, customer communication, sales reporting</td></tr>
+          <tr><td>Operations Executive</td><td>Order processing, packing, shipping, returns intake</td></tr>
+          <tr><td>Finance Executive</td><td>Invoicing, tax accuracy, settlement reconciliation, refunds</td></tr>
+          <tr><td>Warehouse Executive</td><td>Stock counts, inventory adjustments, low-stock response</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 3. Order fulfillment -->
+    <section class="chapter" id="ch3">
+      <div class="chapter-eyebrow">CHAPTER 03</div>
+      <h1>Order fulfillment process</h1>
+      <div class="process-meta"><span><b>Trigger:</b> New order imported from any connected marketplace</span><span><b>Target turnaround:</b> Delivered within 5 business days of payment confirmation</span></div>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="step-title">Confirm payment</div>
+          <div class="step-owner"><span class="owner-pill">Sales Executive</span> · within 2 hours</div>
+          <p>Verify the order's payment status matches what the marketplace reports, then move it to Payment Confirmed.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Generate pick list</div>
+          <div class="step-owner"><span class="owner-pill">Operations Executive</span> · same business day</div>
+          <p>Move the order to Processing and pull items against the pick list.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Pack and label</div>
+          <div class="step-owner"><span class="owner-pill">Operations Executive</span> · same business day</div>
+          <p>Mark the order Packed once items are boxed; this triggers the courier label for integrated shipping methods.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Hand off to courier</div>
+          <div class="step-owner"><span class="owner-pill">Operations Executive</span> · within 1 business day of packing</div>
+          <p>Enter the tracking number and mark the order Shipped.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Issue invoice</div>
+          <div class="step-owner"><span class="owner-pill">Finance Executive</span> · same day as shipping</div>
+          <p>Confirm billing and GST details are complete, then generate the invoice from the order page.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Confirm delivery</div>
+          <div class="step-owner"><span class="owner-pill">Sales Executive</span> · on courier confirmation</div>
+          <p>Mark the order Delivered once the courier confirms — automatically where integrated, manually otherwise.</p>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <div class="label">EXCEPTION</div>
+        <p>If an order remains on New Order for more than 4 hours, the Sales Executive escalates to the source marketplace directly rather than waiting indefinitely for payment confirmation.</p>
+      </div>
+    </section>
+
+    <!-- 4. Product onboarding -->
+    <section class="chapter" id="ch4">
+      <div class="chapter-eyebrow">CHAPTER 04</div>
+      <h1>Product onboarding process</h1>
+      <div class="process-meta"><span><b>Trigger:</b> New product approved for sale</span><span><b>Target turnaround:</b> Live on all channels within 1 business day</span></div>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="step-title">Assign SKU and category</div>
+          <div class="step-owner"><span class="owner-pill">Warehouse Executive</span> · on intake</div>
+          <p>Follow the existing SKU pattern for the category; confirm the SKU isn't already in use.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Enter product record</div>
+          <div class="step-owner"><span class="owner-pill">Operations Executive</span> · same day</div>
+          <p>Add name, variants, price, starting stock, and at least one product image. Leave Status as Inactive until review is complete.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Review for accuracy</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · within 1 business day</div>
+          <p>Check pricing, category, and images against the source listing or supplier sheet.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Activate and sync</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · on approval</div>
+          <p>Set Status to Active. La Poche queues the product for sync to every connected marketplace.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Confirm live listing</div>
+          <div class="step-owner"><span class="owner-pill">Operations Executive</span> · within 1 business day of activation</div>
+          <p>Spot-check the product on at least one connected marketplace to confirm the listing matches.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Marketplace onboarding -->
+    <section class="chapter" id="ch5">
+      <div class="chapter-eyebrow">CHAPTER 05</div>
+      <h1>Marketplace onboarding process</h1>
+      <div class="process-meta"><span><b>Trigger:</b> Decision to sell on a new channel</span><span><b>Target turnaround:</b> Varies with catalog size</span></div>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="step-title">Set up channel account</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · before connecting</div>
+          <p>Confirm a seller account exists on the target marketplace and required documentation (GSTIN, bank details) is on file with them.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Connect and authorize</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · same day</div>
+          <p>Connect the channel under Marketplace Integration and authorize with the requested credentials or API key.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Run initial catalog sync</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · sync time depends on catalog size</div>
+          <p>Sync the full catalog, or select an initial product subset for a phased rollout.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Validate listings</div>
+          <div class="step-owner"><span class="owner-pill">Operations Executive</span> · within 2 business days of sync completing</div>
+          <p>Spot-check a sample of listings on the new channel for pricing, images, and category mapping.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Brief the team</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · before go-live</div>
+          <p>Confirm Sales and Operations are aware of any channel-specific quirks — packaging requirements, SLA differences, or return policies.</p>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <div class="label">EXCEPTION</div>
+        <p>Disconnecting a channel never cancels orders already placed there. Operations must clear all open orders on that channel before an Administrator disconnects it.</p>
+      </div>
+    </section>
+
+    <!-- 6. Returns & refunds -->
+    <section class="chapter" id="ch6">
+      <div class="chapter-eyebrow">CHAPTER 06</div>
+      <h1>Returns &amp; refunds process</h1>
+      <div class="process-meta"><span><b>Trigger:</b> Customer-initiated return or marketplace return notification</span><span><b>Target turnaround:</b> Refund issued within 3 business days of receipt</span></div>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="step-title">Log the return</div>
+          <div class="step-owner"><span class="owner-pill">Sales Executive</span> · on notification</div>
+          <p>Record the return against the original order, including the stated reason.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Receive and inspect</div>
+          <div class="step-owner"><span class="owner-pill">Warehouse Executive</span> · on arrival</div>
+          <p>Inspect the returned item's condition and confirm it matches what was logged.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Restock or write off</div>
+          <div class="step-owner"><span class="owner-pill">Warehouse Executive</span> · same day as inspection</div>
+          <p>Process the return through Sales Management so stock updates automatically; items unfit for resale are written off, not restocked.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Issue refund</div>
+          <div class="step-owner"><span class="owner-pill">Finance Executive</span> · within 3 business days of receipt</div>
+          <p>Process the refund and confirm it's reflected against the original payment method.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Inventory reconciliation -->
+    <section class="chapter" id="ch7">
+      <div class="chapter-eyebrow">CHAPTER 07</div>
+      <h1>Inventory reconciliation process</h1>
+      <div class="process-meta"><span><b>Trigger:</b> Scheduled — weekly, plus any low-stock alert</span><span><b>Target turnaround:</b> Discrepancies resolved within 1 business day</span></div>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="step-title">Run physical count</div>
+          <div class="step-owner"><span class="owner-pill">Warehouse Executive</span> · weekly, scheduled</div>
+          <p>Count physical stock for the week's assigned category and compare against La Poche's recorded quantity.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Log discrepancies</div>
+          <div class="step-owner"><span class="owner-pill">Warehouse Executive</span> · same day</div>
+          <p>Apply a manual stock adjustment for any mismatch, with a reason — recount, damage, or unrecorded return.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Investigate recurring mismatches</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · within 1 business day</div>
+          <p>If the same SKU mismatches repeatedly, check for stock edits made directly on a marketplace outside La Poche.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Respond to low-stock alerts</div>
+          <div class="step-owner"><span class="owner-pill">Warehouse Executive</span> · within 1 business day of alert</div>
+          <p>Confirm whether to reorder, and update the reorder threshold if it no longer reflects lead time.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Settlement reconciliation -->
+    <section class="chapter" id="ch8">
+      <div class="chapter-eyebrow">CHAPTER 08</div>
+      <h1>Settlement reconciliation process</h1>
+      <div class="process-meta"><span><b>Trigger:</b> Marketplace settlement received</span><span><b>Target turnaround:</b> Reconciled within 5 business days</span></div>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="step-title">Pull settlement report</div>
+          <div class="step-owner"><span class="owner-pill">Finance Executive</span> · on receipt</div>
+          <p>Generate the Settlement Report for the period and channel in question.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Match orders to payout</div>
+          <div class="step-owner"><span class="owner-pill">Finance Executive</span> · within 3 business days</div>
+          <p>Confirm each order in the settlement matches a recorded order and that commission and fee deductions are itemized correctly.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Flag mismatches</div>
+          <div class="step-owner"><span class="owner-pill">Finance Executive</span> · same day as found</div>
+          <p>Escalate any payout that doesn't match the expected total to the marketplace's seller support.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Close the period</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · within 5 business days</div>
+          <p>Sign off once all line items are matched or formally flagged as disputed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. User onboarding -->
+    <section class="chapter" id="ch9">
+      <div class="chapter-eyebrow">CHAPTER 09</div>
+      <h1>User on/offboarding process</h1>
+      <div class="process-meta"><span><b>Trigger:</b> New hire start date, or employee departure</span><span><b>Target turnaround:</b> Access granted/revoked same day</span></div>
+
+      <h2>Onboarding</h2>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="step-title">Determine role</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · before start date</div>
+          <p>Choose the most restrictive role that still covers the person's responsibilities — see Chapter 2.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Create account</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · on start date</div>
+          <p>Add the user with their work email; they receive an invitation to set a password.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Confirm access</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · within 1 business day</div>
+          <p>Verify the new user can see the modules their role requires and nothing beyond it.</p>
+        </div>
+      </div>
+
+      <h2>Offboarding</h2>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="step-title">Deactivate account</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · same day as departure</div>
+          <p>Deactivate the user. Any API keys generated under their account are revoked immediately.</p>
+        </div>
+        <div class="flow-step">
+          <div class="step-title">Reassign ownership</div>
+          <div class="step-owner"><span class="owner-pill">Administrator</span> · within 1 business day</div>
+          <p>Transfer any in-progress orders, open returns, or scheduled reports to another team member.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Escalation -->
+    <section class="chapter" id="ch10">
+      <div class="chapter-eyebrow">CHAPTER 10</div>
+      <h1>Escalation process</h1>
+      <p>For anything not resolved through the standard troubleshooting steps in the User Guide.</p>
+
+      <table>
+        <thead><tr><th style="width:26%">Situation</th><th style="width:22%">Escalate to</th><th>Turnaround</th></tr></thead>
+        <tbody>
+          <tr><td>Marketplace sync failure lasting over 4 hours</td><td>Administrator</td><td>Within 1 hour of detection</td></tr>
+          <tr><td>Settlement mismatch unresolved by marketplace support</td><td>Finance Executive → Administrator</td><td>Within 5 business days</td></tr>
+          <tr><td>Repeated inventory discrepancies on the same SKU</td><td>Warehouse Executive → Administrator</td><td>Within 1 business day</td></tr>
+          <tr><td>Issue not covered by this manual or the User Guide</td><td>La Poche Support — support@lapoche.com</td><td>Per support SLA</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <div class="label">BEFORE ESCALATING</div>
+        <p>Have the affected order, product, or settlement ID ready, along with what's already been tried. This is the first thing any escalation path will ask for.</p>
+      </div>
+    </section>
+
+    <footer class="guide-footer">
+      <span>La Poche — Process Documentation</span>
+      <span>v1.0 · June 2026</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  const links = document.querySelectorAll('nav.toc a');
+  const sections = document.querySelectorAll('section.chapter');
+  const setActive = () => {
+    let current = sections[0].id;
+    const scrollPos = window.scrollY + 120;
+    sections.forEach(sec => { if (sec.offsetTop <= scrollPos) current = sec.id; });
+    links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+  };
+  window.addEventListener('scroll', setActive);
+  setActive();
+</script>
+</body>
+</html>

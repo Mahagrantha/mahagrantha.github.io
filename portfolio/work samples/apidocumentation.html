@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Poche — API Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C1F26; --teal:#285C4D; --teal-bg:#E7EFE9; --rust:#B5562B; --rust-bg:#F5E8E0;
+    --muted:#6B7077; --paper:#FBFAF7; --paper-raised:#FFFFFF; --border:#E2DFD6; --border-strong:#CFCBBF;
+    --code-bg:#1C1F26; --code-text:#E8E6DF;
+    --get:#285C4D; --get-bg:#E7EFE9; --post:#1D6FA5; --post-bg:#E6F0F7;
+    --put:#A5791D; --put-bg:#F6EFDF; --delete:#B5562B; --delete-bg:#F5E8E0;
+    --gutter-w:280px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",Arial,sans-serif;font-size:16px;line-height:1.65;}
+  a{color:var(--teal);}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.9em;}
+  .shell{display:grid;grid-template-columns:var(--gutter-w) 1fr;min-height:100vh;}
+  .sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--paper-raised);border-right:1px solid var(--border);padding:32px 0 40px;}
+  .brand{padding:0 28px 18px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+  .brand .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;color:var(--rust);font-weight:500;}
+  .brand h1{font-family:"Fraunces",serif;font-size:30px;font-weight:600;margin:6px 0 4px;}
+  .brand .sub{font-size:13px;color:var(--muted);}
+  .brand .meta{margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+  nav.toc{padding:14px 14px 0;}
+  nav.toc .group-label{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);padding:14px 14px 6px;}
+  nav.toc a{display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink);padding:7px 14px;border-radius:4px;font-size:14px;border-left:2px solid transparent;}
+  nav.toc a:hover{background:var(--teal-bg);}
+  nav.toc a.active{background:var(--teal-bg);border-left:2px solid var(--teal);color:var(--teal);font-weight:500;}
+  nav.toc .num{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);min-width:18px;}
+  nav.toc a.active .num{color:var(--teal);}
+  .sidebar-footer{padding:20px 28px 0;margin-top:18px;border-top:1px solid var(--border);font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+  main{padding:64px 64px 120px;max-width:880px;}
+  .cover{padding-bottom:48px;margin-bottom:56px;border-bottom:1px solid var(--border);}
+  .cover .tag{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;color:var(--rust);font-weight:500;}
+  .cover h1{font-family:"Fraunces",serif;font-size:50px;font-weight:600;margin:10px 0 8px;line-height:1.05;}
+  .cover .lede{font-size:18px;color:#3D4148;margin:0 0 18px;max-width:620px;}
+  .cover .howto{margin-top:24px;font-style:italic;color:var(--muted);font-size:14px;max-width:640px;border-top:1px solid var(--border);padding-top:18px;}
+  section.chapter{padding-top:24px;margin-bottom:64px;scroll-margin-top:32px;}
+  section.chapter .chapter-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--rust);letter-spacing:.1em;margin-bottom:6px;}
+  section.chapter h1{font-family:"Fraunces",serif;font-size:34px;font-weight:600;margin:0 0 26px;padding-bottom:14px;border-bottom:2px solid var(--ink);}
+  section.chapter h2{font-size:21px;font-weight:600;margin:36px 0 14px;}
+  section.chapter h3{font-size:16px;font-weight:600;color:var(--teal);margin:24px 0 10px;}
+  section.chapter p{margin:0 0 14px;color:#3D4148;}
+  ul.bullets{margin:0 0 16px;padding-left:0;list-style:none;}
+  ul.bullets li{position:relative;padding-left:20px;margin-bottom:8px;color:#3D4148;}
+  ul.bullets li::before{content:"";position:absolute;left:4px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--teal);}
+  table{width:100%;border-collapse:collapse;margin:0 0 22px;font-size:14px;}
+  thead th{text-align:left;background:#F2F1ED;font-weight:600;padding:8px 11px;border:1px solid var(--border);}
+  tbody td{padding:8px 11px;border:1px solid var(--border);color:#3D4148;vertical-align:top;}
+  tbody tr:nth-child(even){background:#FCFCFA;}
+  td code{color:var(--teal);}
+
+  /* Endpoint card */
+  .endpoint{margin:0 0 44px;padding:22px 24px;background:var(--paper-raised);border:1px solid var(--border);border-radius:8px;}
+  .endpoint-head{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;}
+  .endpoint-num{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+  .method{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;padding:3px 9px;border-radius:4px;letter-spacing:.03em;}
+  .method.get{color:var(--get);background:var(--get-bg);}
+  .method.post{color:var(--post);background:var(--post-bg);}
+  .method.put{color:var(--put);background:var(--put-bg);}
+  .method.delete{color:var(--delete);background:var(--delete-bg);}
+  .path{font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--ink);}
+  .endpoint h3.title{font-family:"Fraunces",serif;font-size:20px;font-weight:600;margin:6px 0 14px;}
+
+  .field-row{display:flex;gap:18px;margin:0 0 16px;flex-wrap:wrap;}
+  .field{flex:1 1 200px;}
+  .field .k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+  .field .v{font-size:14.5px;color:#3D4148;}
+  .field .v code{font-size:14px;}
+
+  .blocklabel{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);margin:18px 0 6px;text-transform:uppercase;}
+  .blocklabel:first-of-type{margin-top:6px;}
+
+  pre{background:var(--code-bg);color:var(--code-text);border-radius:6px;padding:16px 18px;overflow-x:auto;font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.6;margin:0 0 14px;}
+  .kw{color:#8FB3A3;} .str{color:#D8B98A;} .num{color:#9FC0E8;}
+
+  .status-pill{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;padding:2px 8px;border-radius:4px;margin-right:8px;}
+  .status-pill.ok{color:var(--get);background:var(--get-bg);}
+  .status-pill.err{color:var(--rust);background:var(--rust-bg);}
+
+  .callout{border-left:3px solid var(--teal);background:var(--teal-bg);padding:14px 18px;border-radius:0 6px 6px 0;margin:8px 0 28px;}
+  .callout.warn{border-left-color:var(--rust);background:var(--rust-bg);}
+  .callout .label{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--teal);margin-bottom:5px;}
+  .callout.warn .label{color:var(--rust);}
+  .callout p{margin:0;font-size:14.5px;color:#3D4148;}
+
+  footer.guide-footer{border-top:1px solid var(--border);margin-top:60px;padding-top:24px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;}
+
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--border);}
+    main{padding:40px 24px 80px;}
+    .cover h1{font-size:34px;}
+    section.chapter h1{font-size:26px;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="eyebrow">API DOCUMENTATION</div>
+      <h1>La Poche</h1>
+      <div class="sub">Ecommerce Management Platform</div>
+      <div class="meta">API v2.0 &nbsp;·&nbsp; June 2026</div>
+    </div>
+
+    <nav class="toc" id="toc">
+      <a href="#ov"><span class="num">··</span><span>Overview</span></a>
+      <a href="#auth"><span class="num">··</span><span>Authentication</span></a>
+      <a href="#errors"><span class="num">··</span><span>Errors &amp; rate limits</span></a>
+      <div class="group-label">RESOURCES</div>
+      <a href="#products"><span class="num">01</span><span>Products</span></a>
+      <a href="#orders"><span class="num">02</span><span>Orders</span></a>
+      <a href="#inventory"><span class="num">03</span><span>Inventory</span></a>
+      <a href="#marketplaces"><span class="num">04</span><span>Marketplaces</span></a>
+      <a href="#finance"><span class="num">05</span><span>Finance &amp; invoices</span></a>
+      <a href="#reports"><span class="num">06</span><span>Reports</span></a>
+      <a href="#users"><span class="num">07</span><span>Users</span></a>
+      <a href="#webhooks"><span class="num">08</span><span>Webhooks</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      La Poche — API Documentation<br>support@lapoche.com
+    </div>
+  </aside>
+
+  <main>
+
+    <div class="cover">
+      <div class="tag">API DOCUMENTATION</div>
+      <h1>La Poche API</h1>
+      <p class="lede">A REST API for managing products, orders, inventory, marketplaces, finance, and users on the La Poche platform.</p>
+      <p class="howto">Every endpoint below lists: Title, Overview, HTTP Method, Endpoint, Request Parameters, a Sample Request, Response Parameters, the Success Response (200/201/202) with a sample, the standard HTTP Error codes (400/401/403/404/429/500), and any Additional Error notes specific to that endpoint. All requests and responses use JSON.</p>
+    </div>
+
+    <section class="chapter" id="ov">
+      <div class="chapter-eyebrow">OVERVIEW</div>
+      <h1>Overview</h1>
+      <p>The La Poche API gives programmatic access to everything available in the La Poche dashboard: product catalog, orders, inventory, marketplace connections, invoices and settlements, reports, and user accounts. It's the same API the dashboard itself is built on.</p>
+      <h2>Base URL</h2>
+      <pre><span class="kw">https://api.lapoche.com/v2</span></pre>
+      <h2>Request format</h2>
+      <p>All requests and responses use <code>application/json</code>. Send a <code>Content-Type: application/json</code> header on any request with a body.</p>
+      <h2>Versioning</h2>
+      <p>The current version is <code>v2</code>, included in the base URL. Breaking changes are released under a new version; La Poche supports the previous major version for at least 12 months after a new one ships.</p>
+    </section>
+
+    <section class="chapter" id="auth">
+      <div class="chapter-eyebrow">AUTHENTICATION</div>
+      <h1>Authentication</h1>
+      <p>The API authenticates with a bearer token tied to a user account and its role. Generate a key under <strong>Settings → API Keys</strong> in the dashboard — this requires Administrator access.</p>
+      <h2>Request header</h2>
+      <pre><span class="kw">Authorization:</span> Bearer <span class="str">lp_live_4f8a2e9c1b3d6f7a8e2c5b9d1f4a7c3e</span></pre>
+      <p>Keys inherit the permissions of the role they were generated under — a key created by a Warehouse Executive can only call inventory endpoints, even if the request is otherwise valid.</p>
+      <div class="callout warn">
+        <div class="label">WARNING</div>
+        <p>Treat API keys as credentials. Don't commit them to source control or expose them in client-side code. Rotate a key immediately if you suspect it's been exposed.</p>
+      </div>
+    </section>
+
+    <section class="chapter" id="errors">
+      <div class="chapter-eyebrow">ERRORS &amp; RATE LIMITS</div>
+      <h1>Errors &amp; rate limits</h1>
+      <h2>HTTP status codes</h2>
+      <table>
+        <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>200</code></td><td>OK</td><td>Request succeeded</td></tr>
+          <tr><td><code>201</code></td><td>Created</td><td>Resource was created</td></tr>
+          <tr><td><code>202</code></td><td>Accepted</td><td>Request accepted; processing happens asynchronously</td></tr>
+          <tr><td><code>400</code></td><td>Bad Request</td><td>Malformed request — check required fields</td></tr>
+          <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+          <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+          <tr><td><code>404</code></td><td>Not Found</td><td>Resource doesn't exist</td></tr>
+          <tr><td><code>409</code></td><td>Conflict</td><td>For example, a duplicate SKU or email</td></tr>
+          <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+          <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+        </tbody>
+      </table>
+      <h2>Error response shape</h2>
+      <pre>{
+  <span class="str">"error"</span>: {
+    <span class="str">"code"</span>: <span class="str">"sku_conflict"</span>,
+    <span class="str">"message"</span>: <span class="str">"A product with SKU 'JHB-001' already exists."</span>,
+    <span class="str">"field"</span>: <span class="str">"sku"</span>
+  }
+}</pre>
+      <h2>Rate limits</h2>
+      <p>Standard keys are limited to <strong>120 requests per minute</strong>. The current limit and remaining quota are returned on every response:</p>
+      <pre><span class="kw">X-RateLimit-Limit:</span> 120
+<span class="kw">X-RateLimit-Remaining:</span> 97
+<span class="kw">X-RateLimit-Reset:</span> 1750425600</pre>
+      <p>Exceeding the limit returns <code>429</code>. Back off and retry after the time given in <code>X-RateLimit-Reset</code>.</p>
+    </section>
+
+    <!-- ============== PRODUCTS ============== -->
+    <section class="chapter" id="products">
+      <div class="chapter-eyebrow">RESOURCE 01</div>
+      <h1>Products</h1>
+      <p>Create, update, and list products in the catalog. Changes made here queue a sync to every connected marketplace, the same as editing a product in the dashboard.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">4.1</span><span class="method get">GET</span><span class="path">/products</span></div>
+        <h3 class="title">List products</h3>
+
+        <div class="blocklabel">Overview</div>
+        <p>List products in the catalog, paginated.</p>
+
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method get">GET</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/products</code></div></div>
+        </div>
+
+        <div class="blocklabel">Request parameters (query string)</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>status</code></td><td>string</td><td>Filter by <code>active</code> or <code>inactive</code></td></tr>
+            <tr><td><code>category</code></td><td>string</td><td>Filter by product category</td></tr>
+            <tr><td><code>page</code></td><td>integer</td><td>Page number, default <code>1</code></td></tr>
+            <tr><td><code>limit</code></td><td>integer</td><td>Results per page, default <code>25</code>, max <code>100</code></td></tr>
+          </tbody>
+        </table>
+
+        <div class="blocklabel">Sample request</div>
+        <pre><span class="kw">curl</span> https://api.lapoche.com/v2/products?status=active \
+  -H <span class="str">"Authorization: Bearer lp_live_..."</span></pre>
+
+        <div class="blocklabel">Response parameters</div>
+        <table>
+          <thead><tr><th style="width:24%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>data</code></td><td>array</td><td>List of product objects</td></tr>
+            <tr><td><code>data[].id</code></td><td>string</td><td>Unique product ID</td></tr>
+            <tr><td><code>data[].name</code></td><td>string</td><td>Product name</td></tr>
+            <tr><td><code>data[].sku</code></td><td>string</td><td>Stock keeping unit</td></tr>
+            <tr><td><code>data[].price</code></td><td>number</td><td>Unit price</td></tr>
+            <tr><td><code>data[].stock_quantity</code></td><td>integer</td><td>Units in stock</td></tr>
+            <tr><td><code>data[].status</code></td><td>string</td><td><code>active</code> or <code>inactive</code></td></tr>
+            <tr><td><code>page</code></td><td>integer</td><td>Current page number</td></tr>
+            <tr><td><code>total_pages</code></td><td>integer</td><td>Total number of pages</td></tr>
+          </tbody>
+        </table>
+
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns a paginated list of products.</p>
+        <div class="blocklabel">Sample response</div>
+        <pre>{
+  <span class="str">"data"</span>: [
+    {
+      <span class="str">"id"</span>: <span class="str">"prod_8f2c1a"</span>,
+      <span class="str">"name"</span>: <span class="str">"Premium Jute Tote Bag"</span>,
+      <span class="str">"sku"</span>: <span class="str">"JHB-001"</span>,
+      <span class="str">"category"</span>: <span class="str">"Bags"</span>,
+      <span class="str">"price"</span>: <span class="num">799.00</span>,
+      <span class="str">"stock_quantity"</span>: <span class="num">250</span>,
+      <span class="str">"status"</span>: <span class="str">"active"</span>
+    }
+  ],
+  <span class="str">"page"</span>: <span class="num">1</span>,
+  <span class="str">"total_pages"</span>: <span class="num">6</span>
+}</pre>
+
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>400</code></td><td>Bad Request</td><td>An invalid filter value was supplied (e.g. <code>status</code> not <code>active</code>/<code>inactive</code>)</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">4.2</span><span class="method post">POST</span><span class="path">/products</span></div>
+        <h3 class="title">Create product</h3>
+
+        <div class="blocklabel">Overview</div>
+        <p>Create a new product. Queues a sync to every connected marketplace.</p>
+
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method post">POST</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/products</code></div></div>
+        </div>
+
+        <div class="blocklabel">Request parameters (body)</div>
+        <table>
+          <thead><tr><th style="width:22%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>name</code></td><td>string</td><td>Required</td></tr>
+            <tr><td><code>sku</code></td><td>string</td><td>Required, must be unique</td></tr>
+            <tr><td><code>category</code></td><td>string</td><td>Required</td></tr>
+            <tr><td><code>price</code></td><td>number</td><td>Required</td></tr>
+            <tr><td><code>stock_quantity</code></td><td>integer</td><td>Required</td></tr>
+            <tr><td><code>color</code> / <code>size</code></td><td>string</td><td>Optional variant fields</td></tr>
+            <tr><td><code>status</code></td><td>string</td><td><code>active</code> or <code>inactive</code>, default <code>inactive</code></td></tr>
+          </tbody>
+        </table>
+
+        <div class="blocklabel">Sample request</div>
+        <pre><span class="kw">curl</span> -X POST https://api.lapoche.com/v2/products \
+  -H <span class="str">"Authorization: Bearer lp_live_..."</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{
+    "name": "Premium Jute Tote Bag",
+    "sku": "JHB-001",
+    "category": "Bags",
+    "price": 799.00,
+    "stock_quantity": 250,
+    "status": "active"
+  }'</span></pre>
+
+        <div class="blocklabel">Response parameters</div>
+        <table>
+          <thead><tr><th style="width:24%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>id</code></td><td>string</td><td>Unique ID assigned to the new product</td></tr>
+            <tr><td><code>name</code></td><td>string</td><td>Product name</td></tr>
+            <tr><td><code>sku</code></td><td>string</td><td>Stock keeping unit</td></tr>
+            <tr><td><code>status</code></td><td>string</td><td><code>active</code> or <code>inactive</code></td></tr>
+          </tbody>
+        </table>
+
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">201 Created</span>The product is created and a sync to connected marketplaces is queued.</p>
+        <div class="blocklabel">Sample response</div>
+        <pre>{
+  <span class="str">"id"</span>: <span class="str">"prod_8f2c1a"</span>,
+  <span class="str">"name"</span>: <span class="str">"Premium Jute Tote Bag"</span>,
+  <span class="str">"sku"</span>: <span class="str">"JHB-001"</span>,
+  <span class="str">"status"</span>: <span class="str">"active"</span>
+}</pre>
+
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>400</code></td><td>Bad Request</td><td>A required field is missing or invalid</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>409</code></td><td>Conflict</td><td>The <code>sku</code> already exists on another product</td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+
+        <div class="blocklabel">Additional error notes</div>
+        <p><code>409 sku_conflict</code> — returned when the <code>sku</code> field already exists on another product.</p>
+        <pre>{
+  <span class="str">"error"</span>: {
+    <span class="str">"code"</span>: <span class="str">"sku_conflict"</span>,
+    <span class="str">"message"</span>: <span class="str">"A product with SKU 'JHB-001' already exists."</span>,
+    <span class="str">"field"</span>: <span class="str">"sku"</span>
+  }
+}</pre>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">4.3</span><span class="method put">PUT</span><span class="path">/products/{id}</span></div>
+        <h3 class="title">Update product</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Update an existing product. Only the fields included in the request body are changed.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method put">PUT</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/products/{id}</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td><code>id</code></td><td>string (path)</td><td>Required — the product ID to update</td></tr></tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns the updated product object.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>400</code></td><td>Bad Request</td><td>A field in the body is invalid</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No product exists with the given <code>id</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">4.4</span><span class="method delete">DELETE</span><span class="path">/products/{id}</span></div>
+        <h3 class="title">Deactivate product</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Deactivate a product and remove it from sale on every connected channel. This doesn't delete sales history.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method delete">DELETE</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/products/{id}</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td><code>id</code></td><td>string (path)</td><td>Required — the product ID to deactivate</td></tr></tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>The product is marked inactive and removed from sale on connected channels.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No product exists with the given <code>id</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============== ORDERS ============== -->
+    <section class="chapter" id="orders">
+      <div class="chapter-eyebrow">RESOURCE 02</div>
+      <h1>Orders</h1>
+      <p>Orders import automatically from connected marketplaces. Use this resource to read order data and move orders through the fulfillment workflow.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">5.1</span><span class="method get">GET</span><span class="path">/orders</span></div>
+        <h3 class="title">List orders</h3>
+        <div class="blocklabel">Overview</div>
+        <p>List orders, filterable by status and channel.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method get">GET</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/orders</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters (query string)</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>status</code></td><td>string</td><td><code>new</code>, <code>payment_confirmed</code>, <code>processing</code>, <code>packed</code>, <code>shipped</code>, <code>delivered</code></td></tr>
+            <tr><td><code>channel</code></td><td>string</td><td>Filter by source marketplace</td></tr>
+            <tr><td><code>since</code></td><td>string (ISO 8601)</td><td>Only orders created after this timestamp</td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Response parameters</div>
+        <table>
+          <thead><tr><th style="width:24%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>data</code></td><td>array</td><td>List of order objects</td></tr>
+            <tr><td><code>data[].id</code></td><td>string</td><td>Unique order ID</td></tr>
+            <tr><td><code>data[].channel</code></td><td>string</td><td>Source marketplace</td></tr>
+            <tr><td><code>data[].status</code></td><td>string</td><td>Current fulfillment status</td></tr>
+            <tr><td><code>data[].total</code></td><td>number</td><td>Order total, including tax</td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns a paginated list of orders matching the filters.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>400</code></td><td>Bad Request</td><td>An invalid <code>status</code> or <code>since</code> value was supplied</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">5.2</span><span class="method get">GET</span><span class="path">/orders/{id}</span></div>
+        <h3 class="title">Retrieve order</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Retrieve a single order, including line items, customer details, and current status.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method get">GET</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/orders/{id}</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td><code>id</code></td><td>string (path)</td><td>Required — the order ID to retrieve</td></tr></tbody>
+        </table>
+        <div class="blocklabel">Response parameters</div>
+        <table>
+          <thead><tr><th style="width:24%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>id</code></td><td>string</td><td>Unique order ID</td></tr>
+            <tr><td><code>channel</code></td><td>string</td><td>Source marketplace</td></tr>
+            <tr><td><code>status</code></td><td>string</td><td>Current fulfillment status</td></tr>
+            <tr><td><code>line_items</code></td><td>array</td><td>Items in the order</td></tr>
+            <tr><td><code>line_items[].sku</code></td><td>string</td><td>Stock keeping unit</td></tr>
+            <tr><td><code>line_items[].quantity</code></td><td>integer</td><td>Units ordered</td></tr>
+            <tr><td><code>line_items[].price</code></td><td>number</td><td>Unit price</td></tr>
+            <tr><td><code>total</code></td><td>number</td><td>Order total, including tax</td></tr>
+            <tr><td><code>created_at</code></td><td>string (ISO 8601)</td><td>When the order was created</td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns the full order object.</p>
+        <div class="blocklabel">Sample response</div>
+        <pre>{
+  <span class="str">"id"</span>: <span class="str">"ord_2f91ac"</span>,
+  <span class="str">"channel"</span>: <span class="str">"Shopify"</span>,
+  <span class="str">"status"</span>: <span class="str">"processing"</span>,
+  <span class="str">"line_items"</span>: [
+    { <span class="str">"sku"</span>: <span class="str">"JHB-001"</span>, <span class="str">"quantity"</span>: <span class="num">2</span>, <span class="str">"price"</span>: <span class="num">799.00</span> }
+  ],
+  <span class="str">"total"</span>: <span class="num">1885.64</span>,
+  <span class="str">"created_at"</span>: <span class="str">"2026-06-18T09:12:00Z"</span>
+}</pre>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No order exists with the given <code>id</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">5.3</span><span class="method put">PUT</span><span class="path">/orders/{id}/status</span></div>
+        <h3 class="title">Update order status</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Move an order to the next stage in the fulfillment workflow. Status changes must follow the standard sequence — see Chapter 4 of the User Guide.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method put">PUT</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/orders/{id}/status</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>id</code></td><td>string (path)</td><td>Required — the order ID to update</td></tr>
+            <tr><td><code>status</code></td><td>string (body)</td><td>Required — the new status</td></tr>
+            <tr><td><code>tracking_number</code></td><td>string (body)</td><td>Required when <code>status</code> is <code>shipped</code></td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Sample request</div>
+        <pre><span class="kw">curl</span> -X PUT https://api.lapoche.com/v2/orders/ord_2f91ac/status \
+  -H <span class="str">"Authorization: Bearer lp_live_..."</span> \
+  -d <span class="str">'{ "status": "shipped", "tracking_number": "SF1234567890" }'</span></pre>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns the order with its updated status.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>400</code></td><td>Bad Request</td><td><code>tracking_number</code> missing while setting status to <code>shipped</code></td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No order exists with the given <code>id</code></td></tr>
+            <tr><td><code>409</code></td><td>Conflict</td><td>The requested status doesn't follow the standard sequence</td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Additional error notes</div>
+        <p><code>409 invalid_status_transition</code> — returned when the requested status does not follow the standard fulfillment sequence.</p>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">5.4</span><span class="method post">POST</span><span class="path">/orders/{id}/invoice</span></div>
+        <h3 class="title">Generate invoice</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Generate an invoice for the order and email it to the customer. Equivalent to clicking Generate Invoice in the dashboard.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method post">POST</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/orders/{id}/invoice</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td><code>id</code></td><td>string (path)</td><td>Required — the order ID to invoice</td></tr></tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">201 Created</span>The invoice is generated and emailed to the customer.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No order exists with the given <code>id</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============== INVENTORY ============== -->
+    <section class="chapter" id="inventory">
+      <div class="chapter-eyebrow">RESOURCE 03</div>
+      <h1>Inventory</h1>
+      <p>Read and adjust stock levels. Every change here is reflected in the dashboard's Inventory module and synced to connected marketplaces.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">6.1</span><span class="method get">GET</span><span class="path">/inventory/{sku}</span></div>
+        <h3 class="title">Get stock level</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Get current stock level and status for a product.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method get">GET</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/inventory/{sku}</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td><code>sku</code></td><td>string (path)</td><td>Required — the product SKU</td></tr></tbody>
+        </table>
+        <div class="blocklabel">Response parameters</div>
+        <table>
+          <thead><tr><th style="width:24%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>sku</code></td><td>string</td><td>Stock keeping unit</td></tr>
+            <tr><td><code>stock_quantity</code></td><td>integer</td><td>Units currently in stock</td></tr>
+            <tr><td><code>status</code></td><td>string</td><td><code>in_stock</code>, <code>low_stock</code>, <code>out_of_stock</code></td></tr>
+            <tr><td><code>reorder_threshold</code></td><td>integer</td><td>Quantity that triggers a Low Stock alert</td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns the current stock record for the SKU.</p>
+        <div class="blocklabel">Sample response</div>
+        <pre>{
+  <span class="str">"sku"</span>: <span class="str">"JHB-001"</span>,
+  <span class="str">"stock_quantity"</span>: <span class="num">42</span>,
+  <span class="str">"status"</span>: <span class="str">"low_stock"</span>,
+  <span class="str">"reorder_threshold"</span>: <span class="num">50</span>
+}</pre>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No product exists with the given <code>sku</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">6.2</span><span class="method post">POST</span><span class="path">/inventory/{sku}/adjust</span></div>
+        <h3 class="title">Adjust stock</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Apply a manual stock adjustment, recorded in the product's stock movement history.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method post">POST</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/inventory/{sku}/adjust</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>sku</code></td><td>string (path)</td><td>Required — the product SKU</td></tr>
+            <tr><td><code>delta</code></td><td>integer (body)</td><td>Required — positive to add stock, negative to remove</td></tr>
+            <tr><td><code>reason</code></td><td>string (body)</td><td>Required — e.g. <code>recount</code>, <code>damage</code>, <code>return</code></td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns the updated stock record.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>400</code></td><td>Bad Request</td><td><code>delta</code> or <code>reason</code> missing/invalid</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No product exists with the given <code>sku</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">6.3</span><span class="method put">PUT</span><span class="path">/inventory/{sku}/threshold</span></div>
+        <h3 class="title">Set reorder threshold</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Set the reorder threshold that triggers a Low Stock alert for a product.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method put">PUT</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/inventory/{sku}/threshold</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>sku</code></td><td>string (path)</td><td>Required — the product SKU</td></tr>
+            <tr><td><code>reorder_threshold</code></td><td>integer (body)</td><td>Required — new threshold value</td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns the updated stock record.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>400</code></td><td>Bad Request</td><td><code>reorder_threshold</code> missing or not a positive integer</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No product exists with the given <code>sku</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============== MARKETPLACES ============== -->
+    <section class="chapter" id="marketplaces">
+      <div class="chapter-eyebrow">RESOURCE 04</div>
+      <h1>Marketplaces</h1>
+      <p>Inspect connected channels and trigger syncs. Connecting a new channel for the first time still requires the OAuth flow in the dashboard.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">7.1</span><span class="method get">GET</span><span class="path">/marketplaces</span></div>
+        <h3 class="title">List channels</h3>
+        <div class="blocklabel">Overview</div>
+        <p>List connected channels and their sync status.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method get">GET</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/marketplaces</code></div></div>
+        </div>
+        <div class="blocklabel">Response parameters</div>
+        <table>
+          <thead><tr><th style="width:24%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>data</code></td><td>array</td><td>List of channel objects</td></tr>
+            <tr><td><code>data[].channel</code></td><td>string</td><td>Marketplace name</td></tr>
+            <tr><td><code>data[].status</code></td><td>string</td><td><code>connected</code> or <code>sync_failed</code></td></tr>
+            <tr><td><code>data[].last_synced_at</code></td><td>string (ISO 8601)</td><td>Timestamp of the last sync attempt</td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns the list of connected channels.</p>
+        <div class="blocklabel">Sample response</div>
+        <pre>{
+  <span class="str">"data"</span>: [
+    { <span class="str">"channel"</span>: <span class="str">"Amazon"</span>, <span class="str">"status"</span>: <span class="str">"connected"</span>, <span class="str">"last_synced_at"</span>: <span class="str">"2026-06-20T06:00:00Z"</span> },
+    { <span class="str">"channel"</span>: <span class="str">"Flipkart"</span>, <span class="str">"status"</span>: <span class="str">"sync_failed"</span>, <span class="str">"last_synced_at"</span>: <span class="str">"2026-06-19T06:00:00Z"</span> }
+  ]
+}</pre>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">7.2</span><span class="method post">POST</span><span class="path">/marketplaces/{channel}/sync</span></div>
+        <h3 class="title">Trigger sync</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Trigger a manual sync for a connected channel. Returns immediately; sync runs asynchronously.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method post">POST</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/marketplaces/{channel}/sync</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td><code>channel</code></td><td>string (path)</td><td>Required — the marketplace name, e.g. <code>amazon</code></td></tr></tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">202 Accepted</span>The sync job is queued and will run asynchronously.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No connected channel matches <code>channel</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Additional error notes</div>
+        <p><code>409 sync_in_progress</code> — returned if a sync for this channel is already running.</p>
+      </div>
+    </section>
+
+    <!-- ============== FINANCE ============== -->
+    <section class="chapter" id="finance">
+      <div class="chapter-eyebrow">RESOURCE 05</div>
+      <h1>Finance &amp; invoices</h1>
+      <p>Retrieve invoices, payments, and settlement records for reconciliation.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">8.1</span><span class="method get">GET</span><span class="path">/invoices/{order_id}</span></div>
+        <h3 class="title">Retrieve invoice</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Retrieve the invoice generated for an order, including the GST breakdown.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method get">GET</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/invoices/{order_id}</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td><code>order_id</code></td><td>string (path)</td><td>Required — the order ID</td></tr></tbody>
+        </table>
+        <div class="blocklabel">Response parameters</div>
+        <table>
+          <thead><tr><th style="width:24%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>order_id</code></td><td>string</td><td>Unique order ID</td></tr>
+            <tr><td><code>subtotal</code></td><td>number</td><td>Pre-tax order total</td></tr>
+            <tr><td><code>gst_rate</code></td><td>number</td><td>GST rate applied</td></tr>
+            <tr><td><code>gst_amount</code></td><td>number</td><td>GST amount charged</td></tr>
+            <tr><td><code>total</code></td><td>number</td><td>Final total, including GST</td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns the invoice for the order.</p>
+        <div class="blocklabel">Sample response</div>
+        <pre>{
+  <span class="str">"order_id"</span>: <span class="str">"ord_2f91ac"</span>,
+  <span class="str">"subtotal"</span>: <span class="num">1598.00</span>,
+  <span class="str">"gst_rate"</span>: <span class="num">0.18</span>,
+  <span class="str">"gst_amount"</span>: <span class="num">287.64</span>,
+  <span class="str">"total"</span>: <span class="num">1885.64</span>
+}</pre>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No invoice exists for the given <code>order_id</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">8.2</span><span class="method get">GET</span><span class="path">/settlements</span></div>
+        <h3 class="title">List settlements</h3>
+        <div class="blocklabel">Overview</div>
+        <p>List settlement records from connected marketplaces, with itemized fees and commission deductions.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method get">GET</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/settlements</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters (query string)</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>channel</code></td><td>string</td><td>Filter by marketplace</td></tr>
+            <tr><td><code>period</code></td><td>string</td><td><code>YYYY-MM</code></td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns a paginated list of settlement records.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>400</code></td><td>Bad Request</td><td><code>period</code> not in <code>YYYY-MM</code> format</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============== REPORTS ============== -->
+    <section class="chapter" id="reports">
+      <div class="chapter-eyebrow">RESOURCE 06</div>
+      <h1>Reports</h1>
+      <p>Generate the same reports available under the dashboard's Reports module.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">9.1</span><span class="method post">POST</span><span class="path">/reports</span></div>
+        <h3 class="title">Request report</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Request a report. Returns a job ID; poll the job to retrieve the result once it's ready.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method post">POST</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/reports</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters (body)</div>
+        <table>
+          <thead><tr><th style="width:22%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>type</code></td><td>string</td><td><code>sales</code>, <code>product_performance</code>, <code>inventory</code>, <code>settlement</code>, <code>tax</code>, <code>customer</code></td></tr>
+            <tr><td><code>date_from</code> / <code>date_to</code></td><td>string</td><td>ISO 8601 dates</td></tr>
+            <tr><td><code>format</code></td><td>string</td><td><code>csv</code> or <code>pdf</code></td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Response parameters</div>
+        <table>
+          <thead><tr><th style="width:24%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>job_id</code></td><td>string</td><td>Identifier used to poll for the report's status</td></tr>
+            <tr><td><code>status</code></td><td>string</td><td><code>queued</code>, <code>processing</code>, or <code>ready</code></td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">202 Accepted</span>The report job is queued.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>400</code></td><td>Bad Request</td><td>Invalid <code>type</code>, <code>format</code>, or date range</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">9.2</span><span class="method get">GET</span><span class="path">/reports/{job_id}</span></div>
+        <h3 class="title">Check report status</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Check report status and retrieve a download URL once <code>status</code> is <code>ready</code>.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method get">GET</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/reports/{job_id}</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td><code>job_id</code></td><td>string (path)</td><td>Required — the report job ID</td></tr></tbody>
+        </table>
+        <div class="blocklabel">Response parameters</div>
+        <table>
+          <thead><tr><th style="width:24%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>job_id</code></td><td>string</td><td>Report job ID</td></tr>
+            <tr><td><code>status</code></td><td>string</td><td><code>queued</code>, <code>processing</code>, or <code>ready</code></td></tr>
+            <tr><td><code>download_url</code></td><td>string</td><td>Present only once <code>status</code> is <code>ready</code></td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns the current status of the report job.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>The key's role doesn't permit this action</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No report job exists with the given <code>job_id</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============== USERS ============== -->
+    <section class="chapter" id="users">
+      <div class="chapter-eyebrow">RESOURCE 07</div>
+      <h1>Users</h1>
+      <p>Manage user accounts and roles. These endpoints require an Administrator-scoped key.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">10.1</span><span class="method get">GET</span><span class="path">/users</span></div>
+        <h3 class="title">List users</h3>
+        <div class="blocklabel">Overview</div>
+        <p>List user accounts and their assigned roles.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method get">GET</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/users</code></div></div>
+        </div>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>Returns the list of user accounts.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>Requires an Administrator-scoped key</td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">10.2</span><span class="method post">POST</span><span class="path">/users</span></div>
+        <h3 class="title">Create user</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Create a user and send an invitation email.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method post">POST</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/users</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters (body)</div>
+        <table>
+          <thead><tr><th style="width:22%">Field</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>name</code></td><td>string</td><td>Required</td></tr>
+            <tr><td><code>email</code></td><td>string</td><td>Required, must be unique</td></tr>
+            <tr><td><code>role</code></td><td>string</td><td><code>administrator</code>, <code>sales_executive</code>, <code>operations_executive</code>, <code>finance_executive</code>, <code>warehouse_executive</code></td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">201 Created</span>The user is created and an invitation email is sent.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>400</code></td><td>Bad Request</td><td>A required field is missing or <code>role</code> is invalid</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>Requires an Administrator-scoped key</td></tr>
+            <tr><td><code>409</code></td><td>Conflict</td><td>The <code>email</code> already belongs to another user</td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+        <div class="blocklabel">Additional error notes</div>
+        <p><code>409 email_conflict</code> — returned when the <code>email</code> field already belongs to another user.</p>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head"><span class="endpoint-num">10.3</span><span class="method delete">DELETE</span><span class="path">/users/{id}</span></div>
+        <h3 class="title">Deactivate user</h3>
+        <div class="blocklabel">Overview</div>
+        <p>Deactivate a user account. Revokes any API keys generated under it immediately.</p>
+        <div class="field-row">
+          <div class="field"><div class="k">HTTP Method</div><div class="v"><span class="method delete">DELETE</span></div></div>
+          <div class="field"><div class="k">Endpoint</div><div class="v"><code>/users/{id}</code></div></div>
+        </div>
+        <div class="blocklabel">Request parameters</div>
+        <table>
+          <thead><tr><th style="width:22%">Parameter</th><th style="width:16%">Type</th><th>Description</th></tr></thead>
+          <tbody><tr><td><code>id</code></td><td>string (path)</td><td>Required — the user ID to deactivate</td></tr></tbody>
+        </table>
+        <div class="blocklabel">Success response</div>
+        <p><span class="status-pill ok">200 OK</span>The user is deactivated and their API keys are revoked immediately.</p>
+        <div class="blocklabel">HTTP error codes</div>
+        <table>
+          <thead><tr><th style="width:14%">Code</th><th style="width:22%">Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>401</code></td><td>Unauthorized</td><td>Missing or invalid API key</td></tr>
+            <tr><td><code>403</code></td><td>Forbidden</td><td>Requires an Administrator-scoped key</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td><td>No user exists with the given <code>id</code></td></tr>
+            <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded</td></tr>
+            <tr><td><code>500</code></td><td>Internal Server Error</td><td>Something failed on La Poche's side — safe to retry</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============== WEBHOOKS ============== -->
+    <section class="chapter" id="webhooks">
+      <div class="chapter-eyebrow">RESOURCE 08</div>
+      <h1>Webhooks</h1>
+      <p>Subscribe to events instead of polling. Configure endpoints under <strong>Settings → Webhooks</strong> in the dashboard.</p>
+
+      <h2>Available events</h2>
+      <table>
+        <thead><tr><th style="width:32%">Event</th><th>Fires when</th></tr></thead>
+        <tbody>
+          <tr><td><code>order.created</code></td><td>A new order is imported from any connected channel</td></tr>
+          <tr><td><code>order.status_changed</code></td><td>An order moves to a new status in the fulfillment workflow</td></tr>
+          <tr><td><code>inventory.low_stock</code></td><td>A product's stock crosses its reorder threshold</td></tr>
+          <tr><td><code>marketplace.sync_failed</code></td><td>A scheduled sync to a connected channel fails</td></tr>
+          <tr><td><code>settlement.received</code></td><td>A new settlement record is received from a marketplace</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Payload example</h2>
+      <pre>{
+  <span class="str">"event"</span>: <span class="str">"order.status_changed"</span>,
+  <span class="str">"data"</span>: {
+    <span class="str">"order_id"</span>: <span class="str">"ord_2f91ac"</span>,
+    <span class="str">"previous_status"</span>: <span class="str">"processing"</span>,
+    <span class="str">"new_status"</span>: <span class="str">"packed"</span>
+  },
+  <span class="str">"sent_at"</span>: <span class="str">"2026-06-20T08:41:00Z"</span>
+}</pre>
+
+      <div class="callout">
+        <div class="label">TIP</div>
+        <p>Verify the <code>X-LaPoche-Signature</code> header on every webhook request against your endpoint's signing secret before processing the payload.</p>
+      </div>
+    </section>
+
+    <footer class="guide-footer">
+      <span>La Poche — API Documentation</span>
+      <span>v2.0 · June 2026</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  const links = document.querySelectorAll('nav.toc a');
+  const sections = document.querySelectorAll('section.chapter');
+  const setActive = () => {
+    let current = sections[0].id;
+    const scrollPos = window.scrollY + 120;
+    sections.forEach(sec => { if (sec.offsetTop <= scrollPos) current = sec.id; });
+    links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+  };
+  window.addEventListener('scroll', setActive);
+  setActive();
+</script>
+</body>
+</html>

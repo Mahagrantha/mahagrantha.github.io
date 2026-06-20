@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Poche — API Documentation Release Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C1F26; --teal:#285C4D; --teal-bg:#E7EFE9; --rust:#B5562B; --rust-bg:#F5E8E0;
+    --muted:#6B7077; --paper:#FBFAF7; --paper-raised:#FFFFFF; --border:#E2DFD6; --border-strong:#CFCBBF;
+    --code-bg:#1C1F26; --code-text:#E8E6DF;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",Arial,sans-serif;font-size:16px;line-height:1.65;}
+  a{color:var(--teal);}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.9em;background:#F2F1ED;padding:1px 5px;border-radius:3px;}
+  main{max-width:780px;margin:0 auto;padding:64px 24px 100px;}
+
+  .tag{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;color:var(--rust);font-weight:500;}
+  h1.doc-title{font-family:"Fraunces",serif;font-size:42px;font-weight:600;margin:10px 0 18px;line-height:1.1;}
+
+  .meta-table{width:100%;border-collapse:collapse;margin:0 0 40px;font-family:"IBM Plex Mono",monospace;font-size:13px;}
+  .meta-table td{padding:6px 0;border-bottom:1px solid var(--border);color:#3D4148;}
+  .meta-table td:first-child{color:var(--muted);width:160px;}
+
+  h2{font-family:"Fraunces",serif;font-size:26px;font-weight:600;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--ink);}
+  h3{font-size:17px;font-weight:600;color:var(--teal);margin:28px 0 10px;}
+  p{margin:0 0 14px;color:#3D4148;}
+
+  ul.bullets{margin:0 0 18px;padding-left:0;list-style:none;}
+  ul.bullets li{position:relative;padding-left:22px;margin-bottom:10px;color:#3D4148;}
+  ul.bullets li::before{content:"";position:absolute;left:4px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--teal);}
+
+  ol.steps{margin:0 0 18px;padding-left:22px;}
+  ol.steps li{margin-bottom:10px;color:#3D4148;}
+  ol.steps li::marker{font-family:"IBM Plex Mono",monospace;color:var(--teal);font-weight:600;}
+
+  .callout{border-left:3px solid var(--teal);background:var(--teal-bg);padding:14px 18px;border-radius:0 6px 6px 0;margin:8px 0 28px;}
+  .callout.warn{border-left-color:var(--rust);background:var(--rust-bg);}
+  .callout .label{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--teal);margin-bottom:5px;}
+  .callout.warn .label{color:var(--rust);}
+  .callout p{margin:0;font-size:14.5px;color:#3D4148;}
+
+  table.file-table{width:100%;border-collapse:collapse;margin:0 0 24px;font-size:14px;}
+  table.file-table thead th{text-align:left;background:#F2F1ED;font-weight:600;padding:8px 11px;border:1px solid var(--border);}
+  table.file-table tbody td{padding:8px 11px;border:1px solid var(--border);color:#3D4148;vertical-align:top;}
+  table.file-table tbody tr:nth-child(even){background:#FCFCFA;}
+
+  .changelist{border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:0 0 18px;background:var(--paper-raised);}
+  .changelist .num{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--paper);background:var(--teal);border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;margin-right:8px;}
+
+  footer{border-top:1px solid var(--border);margin-top:60px;padding-top:24px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;}
+</style>
+</head>
+<body>
+<main>
+
+  <div class="tag">RELEASE NOTES</div>
+  <h1 class="doc-title">La Poche API Documentation — Restructuring</h1>
+
+  <table class="meta-table">
+    <tr><td>Release</td><td>Documentation restructuring</td></tr>
+    <tr><td>Date</td><td>June 2026</td></tr>
+    <tr><td>Files affected</td><td><code>La_Poche_API_Documentation.html</code> (and companion <code>.docx</code> export)</td></tr>
+  </table>
+
+  <h2>Summary</h2>
+  <p>The API reference has been reorganized so every endpoint follows one consistent, predictable format. Previously, endpoints showed whatever subset of details applied (some had sample requests, some didn't; error handling was only documented once, globally). Now each endpoint is fully self-contained.</p>
+
+  <h2>What changed</h2>
+
+  <h3>New per-endpoint structure</h3>
+  <p>Every endpoint now includes, in this fixed order:</p>
+  <ol class="steps">
+    <li><strong>Title</strong> — short endpoint name (e.g. "Create product")</li>
+    <li><strong>Overview</strong> — one-line description of what the endpoint does</li>
+    <li><strong>HTTP Method</strong> — GET / POST / PUT / DELETE</li>
+    <li><strong>Endpoint</strong> — the path, e.g. <code>/products/{id}</code></li>
+    <li><strong>Request Parameters</strong> — table of query-string or body fields, with type and description</li>
+    <li><strong>Sample Request</strong> — example <code>curl</code> call where applicable</li>
+    <li><strong>Response Parameters</strong> — table of fields returned in a successful response</li>
+    <li><strong>Success Response</strong> — the relevant status code (200, 201, or 202) with a plain-language description, plus a sample JSON response where applicable</li>
+    <li><strong>HTTP Error Codes</strong> — table of relevant error codes (400, 401, 403, 404, 409, 429, 500) with meaning, scoped to that specific endpoint instead of a single shared list</li>
+    <li><strong>Additional Error Notes</strong> — endpoint-specific error codes not covered by the standard table (e.g. <code>sku_conflict</code>, <code>email_conflict</code>, <code>invalid_status_transition</code>), with sample error payloads</li>
+  </ol>
+
+  <h3>Coverage</h3>
+  <p>All 18 endpoints across the 8 resources were restructured:</p>
+  <table class="file-table">
+    <thead><tr><th style="width:34%">Resource</th><th>Endpoints restructured</th></tr></thead>
+    <tbody>
+      <tr><td>Products</td><td>4 — list, create, update, deactivate</td></tr>
+      <tr><td>Orders</td><td>4 — list, retrieve, update status, generate invoice</td></tr>
+      <tr><td>Inventory</td><td>3 — get stock level, adjust stock, set reorder threshold</td></tr>
+      <tr><td>Marketplaces</td><td>2 — list channels, trigger sync</td></tr>
+      <tr><td>Finance &amp; Invoices</td><td>2 — retrieve invoice, list settlements</td></tr>
+      <tr><td>Reports</td><td>2 — request report, check report status</td></tr>
+      <tr><td>Users</td><td>3 — list, create, deactivate</td></tr>
+    </tbody>
+  </table>
+  <p>Webhooks remains a reference section (event table + payload example) rather than a request/response endpoint, so it wasn't restructured into the same format.</p>
+
+  <h3>What stayed the same</h3>
+  <ul class="bullets">
+    <li>Overview, Authentication, and Errors &amp; Rate Limits chapters are unchanged in content.</li>
+    <li>Visual design, color palette, and sidebar navigation are unchanged.</li>
+    <li>Base URL, versioning policy, and rate limit values (120 req/min) are unchanged.</li>
+  </ul>
+
+  <h2>Why this change</h2>
+  <ul class="bullets">
+    <li>Makes every endpoint scannable in isolation — a developer integrating against <code>POST /orders/{id}/invoice</code> no longer needs to cross-reference the global error table to know what 404 means in that context.</li>
+    <li>Surfaces endpoint-specific errors (e.g. <code>invalid_status_transition</code> on order status updates) that were previously undocumented at the endpoint level.</li>
+    <li>Produces a format that converts cleanly to other outputs (Word/.docx) without losing structure.</li>
+  </ul>
+
+  <h2>Formats delivered</h2>
+  <table class="file-table">
+    <thead><tr><th style="width:50%">File</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>La_Poche_API_Documentation_Restructured.html</code></td><td>Same visual theme as the original, restructured content</td></tr>
+      <tr><td><code>La_Poche_API_Documentation_Restructured.docx</code></td><td>Word version of the same restructured content</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Known limitations / follow-ups</h2>
+  <div class="callout warn">
+    <div class="label">NEEDS VERIFICATION</div>
+    <p>Some endpoint-specific error codes (e.g. <code>sync_in_progress</code> on marketplace sync) were inferred to fill out the standard format and should be verified against the actual API behavior before publishing externally.</p>
+  </div>
+  <div class="callout warn">
+    <div class="label">NEEDS VERIFICATION</div>
+    <p>Pagination details (e.g. on <code>GET /settlements</code>) were not in the original source and may need to be added if that endpoint supports paging.</p>
+  </div>
+
+  <footer>
+    <span>La Poche — API Documentation Release Notes</span>
+    <span>June 2026</span>
+  </footer>
+
+</main>
+</body>
+</html>
