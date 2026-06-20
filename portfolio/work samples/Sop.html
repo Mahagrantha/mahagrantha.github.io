@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Poche — Standard Operating Procedures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C1F26; --teal:#285C4D; --teal-bg:#E7EFE9; --rust:#B5562B; --rust-bg:#F5E8E0;
+    --muted:#6B7077; --paper:#FBFAF7; --paper-raised:#FFFFFF; --border:#E2DFD6; --border-strong:#CFCBBF;
+    --code-bg:#1C1F26; --code-text:#E8E6DF; --gutter-w:280px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",Arial,sans-serif;font-size:16px;line-height:1.65;}
+  a{color:var(--teal);}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.9em;background:#F2F1ED;padding:1px 5px;border-radius:3px;}
+  .shell{display:grid;grid-template-columns:var(--gutter-w) 1fr;min-height:100vh;}
+  .sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--paper-raised);border-right:1px solid var(--border);padding:32px 0 40px;}
+  .brand{padding:0 28px 18px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+  .brand .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;color:var(--rust);font-weight:500;}
+  .brand h1{font-family:"Fraunces",serif;font-size:28px;font-weight:600;margin:6px 0 4px;}
+  .brand .sub{font-size:13px;color:var(--muted);}
+  .brand .meta{margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+  nav.toc{padding:14px 14px 0;}
+  nav.toc .group-label{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);padding:14px 14px 6px;}
+  nav.toc a{display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink);padding:7px 14px;border-radius:4px;font-size:14px;border-left:2px solid transparent;}
+  nav.toc a:hover{background:var(--teal-bg);}
+  nav.toc a.active{background:var(--teal-bg);border-left:2px solid var(--teal);color:var(--teal);font-weight:500;}
+  nav.toc .num{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);min-width:18px;}
+  nav.toc a.active .num{color:var(--teal);}
+  .sidebar-footer{padding:20px 28px 0;margin-top:18px;border-top:1px solid var(--border);font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+  main{padding:64px 64px 120px;max-width:880px;}
+  .cover{padding-bottom:48px;margin-bottom:56px;border-bottom:1px solid var(--border);}
+  .cover .tag{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;color:var(--rust);font-weight:500;}
+  .cover h1{font-family:"Fraunces",serif;font-size:46px;font-weight:600;margin:10px 0 8px;line-height:1.08;}
+  .cover .lede{font-size:18px;color:#3D4148;margin:0 0 18px;max-width:640px;}
+  section.chapter{padding-top:24px;margin-bottom:64px;scroll-margin-top:32px;}
+  section.chapter .chapter-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--rust);letter-spacing:.1em;margin-bottom:6px;}
+  section.chapter h1{font-family:"Fraunces",serif;font-size:32px;font-weight:600;margin:0 0 24px;padding-bottom:14px;border-bottom:2px solid var(--ink);}
+  section.chapter h2{font-size:21px;font-weight:600;margin:36px 0 12px;}
+  section.chapter h3{font-size:16px;font-weight:600;color:var(--teal);margin:22px 0 8px;}
+  section.chapter p{margin:0 0 14px;color:#3D4148;}
+  ul.bullets{margin:0 0 16px;padding-left:0;list-style:none;}
+  ul.bullets li{position:relative;padding-left:20px;margin-bottom:8px;color:#3D4148;}
+  ul.bullets li::before{content:"";position:absolute;left:4px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--teal);}
+  ol.steps{margin:0 0 18px;padding-left:0;list-style:none;counter-reset:step;}
+  ol.steps li{position:relative;padding:10px 0 10px 42px;margin-bottom:4px;color:#3D4148;border-bottom:1px solid var(--border);counter-increment:step;}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(step);position:absolute;left:0;top:9px;width:26px;height:26px;border-radius:50%;background:var(--teal-bg);color:var(--teal);font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;text-align:center;line-height:26px;}
+  table{width:100%;border-collapse:collapse;margin:0 0 22px;font-size:14px;}
+  thead th{text-align:left;background:#F2F1ED;font-weight:600;padding:8px 11px;border:1px solid var(--border);}
+  tbody td{padding:8px 11px;border:1px solid var(--border);color:#3D4148;vertical-align:top;}
+  tbody tr:nth-child(even){background:#FCFCFA;}
+
+  /* SOP card */
+  .sop{margin:0 0 40px;padding:22px 24px;background:var(--paper-raised);border:1px solid var(--border);border-radius:8px;}
+  .sop-head{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;}
+  .sop-num{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+  .pill{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;padding:3px 9px;border-radius:4px;letter-spacing:.03em;}
+  .pill.role{color:var(--teal);background:var(--teal-bg);}
+  .pill.freq{color:var(--rust);background:var(--rust-bg);}
+  .sop h3.title{font-family:"Fraunces",serif;font-size:20px;font-weight:600;margin:6px 0 14px;}
+  .field-row{display:flex;gap:18px;margin:0 0 16px;flex-wrap:wrap;}
+  .field{flex:1 1 200px;}
+  .field .k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+  .field .v{font-size:14.5px;color:#3D4148;}
+  .blocklabel{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);margin:18px 0 6px;text-transform:uppercase;}
+  .blocklabel:first-of-type{margin-top:6px;}
+
+  .callout{border-left:3px solid var(--teal);background:var(--teal-bg);padding:14px 18px;border-radius:0 6px 6px 0;margin:8px 0 28px;}
+  .callout.warn{border-left-color:var(--rust);background:var(--rust-bg);}
+  .callout .label{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--teal);margin-bottom:5px;}
+  .callout.warn .label{color:var(--rust);}
+  .callout p{margin:0;font-size:14.5px;color:#3D4148;}
+
+  /* KB / FAQ accordion */
+  .faq{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;background:var(--paper-raised);overflow:hidden;}
+  .faq summary{list-style:none;cursor:pointer;padding:14px 18px;font-weight:600;font-size:15px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"+";font-family:"IBM Plex Mono",monospace;color:var(--teal);font-size:18px;flex-shrink:0;}
+  .faq[open] summary::after{content:"–";}
+  .faq .faq-body{padding:0 18px 16px;color:#3D4148;font-size:14.5px;border-top:1px solid var(--border);padding-top:12px;}
+  .faq[open] summary{border-bottom:1px solid var(--border);}
+
+  .glossary dt{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--teal);margin-top:14px;}
+  .glossary dd{margin:4px 0 0;color:#3D4148;}
+
+  footer.guide-footer{border-top:1px solid var(--border);margin-top:60px;padding-top:24px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;}
+
+  @media (max-width: 880px) {
+
+      nav.toc {
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        padding: 12px;
+      }
+
+      nav.toc a {
+        white-space: nowrap;
+        min-width: max-content;
+      }
+
+      .shell {
+        display: block;
+      }
+
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      main {
+        width: 100%;
+        max-width: 100%;
+        padding: 20px;
+        margin: 0;
+      }
+
+      .cover h1 {
+        font-size: 38px;
+      }
+
+      section.chapter h1 {
+        font-size: 28px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      footer.guide-footer {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="eyebrow">INTERNAL DOCUMENTATION</div>
+      <h1>La Poche</h1>
+      <div class="sub">Standard Operating Procedures</div>
+      <div class="meta">v1.0 &nbsp;·&nbsp; June 2026</div>
+    </div>
+
+    <nav class="toc" id="toc">
+      <a href="#intro"><span class="num">··</span><span>Introduction</span></a>
+      <a href="#sop-order"><span class="num">01</span><span>Order fulfillment</span></a>
+      <a href="#sop-inventory"><span class="num">02</span><span>Inventory &amp; stock counts</span></a>
+      <a href="#sop-returns"><span class="num">03</span><span>Returns &amp; refunds</span></a>
+      <a href="#sop-listing"><span class="num">04</span><span>New product listing</span></a>
+      <a href="#sop-marketplace"><span class="num">05</span><span>Marketplace sync recovery</span></a>
+      <a href="#sop-settlement"><span class="num">06</span><span>Settlement reconciliation</span></a>
+      <a href="#sop-onboarding"><span class="num">07</span><span>User onboarding &amp; offboarding</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      La Poche — Internal Use Only<br>ops@lapoche.com
+    </div>
+  </aside>
+
+  <main>
+
+    <div class="cover">
+      <div class="tag">STANDARD OPERATING PROCEDURES</div>
+      <h1>Operating Procedures</h1>
+      <p class="lede">The exact steps to follow for recurring operational tasks on the La Poche platform — order fulfillment, inventory, returns, listings, marketplace syncing, settlements, and user management — each with an owner, frequency, and step-by-step process.</p>
+    </div>
+
+    <section class="chapter" id="intro">
+      <div class="chapter-eyebrow">INTRODUCTION</div>
+      <h1>How to use this document</h1>
+      <p>This document has two parts. <strong>Part 1</strong> is a set of Standard Operating Procedures (SOPs) — the exact steps to follow for recurring operational tasks, each with an owner, frequency, and step-by-step process. <strong>Part 2</strong> is a Knowledge Base — role definitions, frequently asked questions, troubleshooting guidance, and a glossary of terms used across the platform.</p>
+      <p>This is a work sample built around the La Poche platform structure (Products, Orders, Inventory, Marketplaces, Finance, Reports, Users) introduced in the API documentation. Treat specific thresholds, timeframes, and contact names as illustrative — adapt them to your actual operating environment before publishing internally.</p>
+    </section>
+
+    <section class="chapter" id="sop-order">
+      <div class="chapter-eyebrow">PART 1 · PROCEDURE 01</div>
+      <h1>Order fulfillment</h1>
+      <p>Covers the path an order takes from arriving in La Poche to being marked delivered, across all connected marketplaces.</p>
+
+      <div class="sop">
+        <div class="sop-head">
+          <span class="pill role">Owner: Operations Executive</span>
+          <span class="pill freq">Frequency: Daily, per order</span>
+        </div>
+        <h3 class="title">From new order to delivery</h3>
+
+        <div class="blocklabel">Purpose</div>
+        <p>Ensure every order moves through the fulfillment workflow in the correct sequence, with no order left in <code>new</code> status for more than 24 hours.</p>
+
+        <div class="blocklabel">Procedure</div>
+        <ol class="steps">
+          <li>Check the Orders dashboard each morning and filter by status <code>new</code>. New orders import automatically from all connected marketplaces.</li>
+          <li>Confirm payment has cleared on the source marketplace. Move the order to <code>payment_confirmed</code>.</li>
+          <li>Pick and pack the items. Move the order to <code>processing</code>, then <code>packed</code> once items are boxed and labeled.</li>
+          <li>Hand the package to the courier and record the tracking number. Move the order to <code>shipped</code> — the tracking number is required at this step.</li>
+          <li>Generate the invoice for the order and confirm it was emailed to the customer.</li>
+          <li>Once the courier confirms delivery (via tracking or marketplace status), move the order to <code>delivered</code>.</li>
+        </ol>
+
+        <div class="callout warn">
+          <div class="label">COMMON MISTAKE</div>
+          <p>Status changes must follow the standard sequence — you cannot skip from <code>new</code> directly to <code>shipped</code>. Attempting to do so returns an <code>invalid_status_transition</code> error.</p>
+        </div>
+
+        <div class="blocklabel">Escalation</div>
+        <p>If an order sits in <code>new</code> for more than 24 hours, or a marketplace shows a payment as cleared but La Poche doesn't reflect it, escalate to the Operations Lead.</p>
+      </div>
+    </section>
+
+<section class="chapter" id="sop-inventory">
+      <div class="chapter-eyebrow">PART 1 · PROCEDURE 02</div>
+      <h1>Inventory &amp; stock counts</h1>
+      <p>Covers manual stock adjustments and the weekly physical count reconciliation.</p>
+
+      <div class="sop">
+        <div class="sop-head">
+          <span class="pill role">Owner: Warehouse Executive</span>
+          <span class="pill freq">Frequency: Weekly + ad hoc</span>
+        </div>
+        <h3 class="title">Weekly stock reconciliation</h3>
+
+        <div class="blocklabel">Purpose</div>
+        <p>Keep the system's recorded stock quantity aligned with what's physically on the shelf, and prevent overselling on low-stock items.</p>
+
+        <div class="blocklabel">Procedure</div>
+        <ol class="steps">
+          <li>Pull the current stock level for each SKU in the warehouse from the Inventory module.</li>
+          <li>Physically count stock for each SKU during the Friday count window.</li>
+          <li>Where the physical count differs from the system count, apply a manual stock adjustment with a reason of <code>recount</code>.</li>
+          <li>For damaged or written-off stock found during the count, apply a separate adjustment with reason <code>damage</code>.</li>
+          <li>Review any SKU flagged <code>low_stock</code> or <code>out_of_stock</code> and confirm whether the reorder threshold needs updating.</li>
+          <li>Log the count summary (SKUs adjusted, total variance) in the weekly ops report.</li>
+        </ol>
+
+        <div class="callout">
+          <div class="label">TIP</div>
+          <p>A stock adjustment's <code>delta</code> should be positive to add stock and negative to remove it — always double-check the sign before submitting.</p>
+        </div>
+      </div>
+    </section>
+
+<section class="chapter" id="sop-returns">
+      <div class="chapter-eyebrow">PART 1 · PROCEDURE 03</div>
+      <h1>Returns &amp; refunds</h1>
+      <p>Covers handling a returned item once it's back in the warehouse.</p>
+
+      <div class="sop">
+        <div class="sop-head">
+          <span class="pill role">Owner: Operations Executive + Finance Executive</span>
+          <span class="pill freq">Frequency: As needed</span>
+        </div>
+        <h3 class="title">Processing a returned item</h3>
+
+        <div class="blocklabel">Procedure</div>
+        <ol class="steps">
+          <li>Inspect the returned item against the reason given by the customer (wrong item, damaged, changed mind, etc.).</li>
+          <li>If the item is resellable, apply a stock adjustment with reason <code>return</code> to add it back to available inventory.</li>
+          <li>If the item is damaged beyond resale, apply a stock adjustment with reason <code>damage</code> instead, so it isn't counted as sellable.</li>
+          <li>Hand off to Finance to process the refund through the originating marketplace's refund flow.</li>
+          <li>Finance confirms the refund against the original invoice and notes it in the settlement record for that period.</li>
+        </ol>
+
+        <div class="callout warn">
+          <div class="label">COMMON MISTAKE</div>
+          <p>Don't add a damaged return back to stock with reason <code>return</code> — it will show as sellable and risks being shipped to the next customer.</p>
+        </div>
+      </div>
+    </section>
+
+<section class="chapter" id="sop-listing">
+      <div class="chapter-eyebrow">PART 1 · PROCEDURE 04</div>
+      <h1>New product listing</h1>
+      <p>Covers adding a new product to the catalog and getting it live across connected marketplaces.</p>
+
+      <div class="sop">
+        <div class="sop-head">
+          <span class="pill role">Owner: Sales Executive</span>
+          <span class="pill freq">Frequency: As needed</span>
+        </div>
+        <h3 class="title">Listing a new product</h3>
+
+        <div class="blocklabel">Procedure</div>
+        <ol class="steps">
+          <li>Confirm the product has a unique SKU. The system will reject a duplicate with a <code>sku_conflict</code> error.</li>
+          <li>Create the product with name, category, price, and starting stock quantity. Leave status as <code>inactive</code> until photography and copy are ready.</li>
+          <li>Add variant details (color, size) where applicable.</li>
+          <li>Once content is ready, set status to <code>active</code>. This queues a sync to every connected marketplace.</li>
+          <li>Check the Marketplaces dashboard the next day to confirm the listing synced successfully on each channel.</li>
+        </ol>
+
+        <div class="callout">
+          <div class="label">TIP</div>
+          <p>Keep new listings <code>inactive</code> until they're fully ready — switching status later re-triggers the marketplace sync rather than requiring a manual re-list.</p>
+        </div>
+      </div>
+    </section>
+
+<section class="chapter" id="sop-marketplace">
+      <div class="chapter-eyebrow">PART 1 · PROCEDURE 05</div>
+      <h1>Marketplace sync recovery</h1>
+      <p>Covers what to do when a connected channel shows <code>sync_failed</code>.</p>
+
+      <div class="sop">
+        <div class="sop-head">
+          <span class="pill role">Owner: Operations Executive</span>
+          <span class="pill freq">Frequency: As needed</span>
+        </div>
+        <h3 class="title">Recovering a failed sync</h3>
+
+        <div class="blocklabel">Procedure</div>
+        <ol class="steps">
+          <li>Check the Marketplaces dashboard for any channel showing <code>sync_failed</code> and note the <code>last_synced_at</code> timestamp.</li>
+          <li>Trigger a manual sync for the affected channel. This runs asynchronously, so don't trigger it repeatedly while one is in progress — a second attempt returns <code>sync_in_progress</code>.</li>
+          <li>Wait at least 10 minutes, then refresh the Marketplaces dashboard to confirm the channel now shows <code>connected</code>.</li>
+          <li>If the channel still shows <code>sync_failed</code> after a manual retry, check whether the marketplace's OAuth connection has expired — this requires reconnecting through the dashboard, not the API.</li>
+          <li>If reconnecting doesn't resolve it, escalate to the Operations Lead with the channel name and timestamp of the first failure.</li>
+        </ol>
+      </div>
+    </section>
+
+<section class="chapter" id="sop-settlement">
+      <div class="chapter-eyebrow">PART 1 · PROCEDURE 06</div>
+      <h1>Settlement reconciliation</h1>
+      <p>Covers matching marketplace settlement payouts against expected order totals.</p>
+
+      <div class="sop">
+        <div class="sop-head">
+          <span class="pill role">Owner: Finance Executive</span>
+          <span class="pill freq">Frequency: Monthly</span>
+        </div>
+        <h3 class="title">Monthly settlement close</h3>
+
+        <div class="blocklabel">Procedure</div>
+        <ol class="steps">
+          <li>Pull the settlement list for the closing month, filtered by channel.</li>
+          <li>For each settlement record, compare the payout amount against the sum of order invoices for that period and channel.</li>
+          <li>Flag any variance beyond the agreed tolerance (e.g. commission or fee mismatches) for review.</li>
+          <li>Request the relevant sales or tax report (type <code>settlement</code> or <code>tax</code>) for the period to support the reconciliation.</li>
+          <li>Once reconciled, sign off the period in the finance tracker and archive the supporting reports.</li>
+        </ol>
+      </div>
+    </section>
+
+<section class="chapter" id="sop-onboarding">
+      <div class="chapter-eyebrow">PART 1 · PROCEDURE 07</div>
+      <h1>User onboarding &amp; offboarding</h1>
+      <p>Covers granting and revoking platform access for team members.</p>
+
+      <div class="sop">
+        <div class="sop-head">
+          <span class="pill role">Owner: Administrator</span>
+          <span class="pill freq">Frequency: As needed</span>
+        </div>
+        <h3 class="title">Onboarding a new user</h3>
+        <div class="blocklabel">Procedure</div>
+        <ol class="steps">
+          <li>Confirm the new team member's role: Administrator, Sales Executive, Operations Executive, Finance Executive, or Warehouse Executive.</li>
+          <li>Create the user account with their name, work email, and assigned role. An invitation email is sent automatically.</li>
+          <li>Confirm they've accepted the invitation and can log in.</li>
+          <li>If they need API access, generate a key under their account — note that it inherits the permissions of their role.</li>
+        </ol>
+      </div>
+
+      <div class="sop">
+        <div class="sop-head">
+          <span class="pill role">Owner: Administrator</span>
+          <span class="pill freq">Frequency: As needed</span>
+        </div>
+        <h3 class="title">Offboarding a departing user</h3>
+        <div class="blocklabel">Procedure</div>
+        <ol class="steps">
+          <li>Deactivate the user's account on their last working day. This immediately revokes any API keys generated under it.</li>
+          <li>Confirm with the relevant team lead that any scheduled reports or integrations tied to that person's account are reassigned.</li>
+          <li>Remove them from any external tools tied to platform access (Slack channels, shared drives, etc.).</li>
+        </ol>
+        <div class="callout warn">
+          <div class="label">IMPORTANT</div>
+          <p>Deactivation is immediate and revokes API keys right away — confirm any automated jobs running under that user's key have been moved to a service account first.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="guide-footer">
+      <span>La Poche — Standard Operating Procedures</span>
+      <span>v1.0 · June 2026</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  const links = document.querySelectorAll('nav.toc a');
+  const sections = document.querySelectorAll('section.chapter');
+  const setActive = () => {
+    let current = sections[0].id;
+    const scrollPos = window.scrollY + 120;
+    sections.forEach(sec => { if (sec.offsetTop <= scrollPos) current = sec.id; });
+    links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+  };
+  window.addEventListener('scroll', setActive);
+  setActive();
+</script>
+</body>
+</html>

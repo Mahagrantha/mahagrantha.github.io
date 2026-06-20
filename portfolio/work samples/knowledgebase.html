@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Poche — Knowledge Base</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C1F26; --teal:#285C4D; --teal-bg:#E7EFE9; --rust:#B5562B; --rust-bg:#F5E8E0;
+    --muted:#6B7077; --paper:#FBFAF7; --paper-raised:#FFFFFF; --border:#E2DFD6; --border-strong:#CFCBBF;
+    --code-bg:#1C1F26; --code-text:#E8E6DF; --gutter-w:280px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",Arial,sans-serif;font-size:16px;line-height:1.65;}
+  a{color:var(--teal);}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.9em;background:#F2F1ED;padding:1px 5px;border-radius:3px;}
+  .shell{display:grid;grid-template-columns:var(--gutter-w) 1fr;min-height:100vh;}
+  .sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--paper-raised);border-right:1px solid var(--border);padding:32px 0 40px;}
+  .brand{padding:0 28px 18px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+  .brand .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;color:var(--rust);font-weight:500;}
+  .brand h1{font-family:"Fraunces",serif;font-size:28px;font-weight:600;margin:6px 0 4px;}
+  .brand .sub{font-size:13px;color:var(--muted);}
+  .brand .meta{margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+  nav.toc{padding:14px 14px 0;}
+  nav.toc .group-label{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);padding:14px 14px 6px;}
+  nav.toc a{display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink);padding:7px 14px;border-radius:4px;font-size:14px;border-left:2px solid transparent;}
+  nav.toc a:hover{background:var(--teal-bg);}
+  nav.toc a.active{background:var(--teal-bg);border-left:2px solid var(--teal);color:var(--teal);font-weight:500;}
+  nav.toc .num{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);min-width:18px;}
+  nav.toc a.active .num{color:var(--teal);}
+  .sidebar-footer{padding:20px 28px 0;margin-top:18px;border-top:1px solid var(--border);font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+  main{padding:64px 64px 120px;max-width:880px;}
+  .cover{padding-bottom:48px;margin-bottom:56px;border-bottom:1px solid var(--border);}
+  .cover .tag{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;color:var(--rust);font-weight:500;}
+  .cover h1{font-family:"Fraunces",serif;font-size:46px;font-weight:600;margin:10px 0 8px;line-height:1.08;}
+  .cover .lede{font-size:18px;color:#3D4148;margin:0 0 18px;max-width:640px;}
+  section.chapter{padding-top:24px;margin-bottom:64px;scroll-margin-top:32px;}
+  section.chapter .chapter-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--rust);letter-spacing:.1em;margin-bottom:6px;}
+  section.chapter h1{font-family:"Fraunces",serif;font-size:32px;font-weight:600;margin:0 0 24px;padding-bottom:14px;border-bottom:2px solid var(--ink);}
+  section.chapter h2{font-size:21px;font-weight:600;margin:36px 0 12px;}
+  section.chapter h3{font-size:16px;font-weight:600;color:var(--teal);margin:22px 0 8px;}
+  section.chapter p{margin:0 0 14px;color:#3D4148;}
+  ul.bullets{margin:0 0 16px;padding-left:0;list-style:none;}
+  ul.bullets li{position:relative;padding-left:20px;margin-bottom:8px;color:#3D4148;}
+  ul.bullets li::before{content:"";position:absolute;left:4px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--teal);}
+  ol.steps{margin:0 0 18px;padding-left:0;list-style:none;counter-reset:step;}
+  ol.steps li{position:relative;padding:10px 0 10px 42px;margin-bottom:4px;color:#3D4148;border-bottom:1px solid var(--border);counter-increment:step;}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(step);position:absolute;left:0;top:9px;width:26px;height:26px;border-radius:50%;background:var(--teal-bg);color:var(--teal);font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;text-align:center;line-height:26px;}
+  table{width:100%;border-collapse:collapse;margin:0 0 22px;font-size:14px;}
+  thead th{text-align:left;background:#F2F1ED;font-weight:600;padding:8px 11px;border:1px solid var(--border);}
+  tbody td{padding:8px 11px;border:1px solid var(--border);color:#3D4148;vertical-align:top;}
+  tbody tr:nth-child(even){background:#FCFCFA;}
+
+  /* SOP card */
+  .sop{margin:0 0 40px;padding:22px 24px;background:var(--paper-raised);border:1px solid var(--border);border-radius:8px;}
+  .sop-head{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;}
+  .sop-num{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);}
+  .pill{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;padding:3px 9px;border-radius:4px;letter-spacing:.03em;}
+  .pill.role{color:var(--teal);background:var(--teal-bg);}
+  .pill.freq{color:var(--rust);background:var(--rust-bg);}
+  .sop h3.title{font-family:"Fraunces",serif;font-size:20px;font-weight:600;margin:6px 0 14px;}
+  .field-row{display:flex;gap:18px;margin:0 0 16px;flex-wrap:wrap;}
+  .field{flex:1 1 200px;}
+  .field .k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+  .field .v{font-size:14.5px;color:#3D4148;}
+  .blocklabel{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);margin:18px 0 6px;text-transform:uppercase;}
+  .blocklabel:first-of-type{margin-top:6px;}
+
+  .callout{border-left:3px solid var(--teal);background:var(--teal-bg);padding:14px 18px;border-radius:0 6px 6px 0;margin:8px 0 28px;}
+  .callout.warn{border-left-color:var(--rust);background:var(--rust-bg);}
+  .callout .label{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--teal);margin-bottom:5px;}
+  .callout.warn .label{color:var(--rust);}
+  .callout p{margin:0;font-size:14.5px;color:#3D4148;}
+
+  /* KB / FAQ accordion */
+  .faq{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;background:var(--paper-raised);overflow:hidden;}
+  .faq summary{list-style:none;cursor:pointer;padding:14px 18px;font-weight:600;font-size:15px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"+";font-family:"IBM Plex Mono",monospace;color:var(--teal);font-size:18px;flex-shrink:0;}
+  .faq[open] summary::after{content:"–";}
+  .faq .faq-body{padding:0 18px 16px;color:#3D4148;font-size:14.5px;border-top:1px solid var(--border);padding-top:12px;}
+  .faq[open] summary{border-bottom:1px solid var(--border);}
+
+  .glossary dt{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--teal);margin-top:14px;}
+  .glossary dd{margin:4px 0 0;color:#3D4148;}
+
+  footer.guide-footer{border-top:1px solid var(--border);margin-top:60px;padding-top:24px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;}
+
+  
+  @media (max-width: 880px) {
+
+      nav.toc {
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        padding: 12px;
+      }
+
+      nav.toc a {
+        white-space: nowrap;
+        min-width: max-content;
+      }
+
+      .shell {
+        display: block;
+      }
+
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      main {
+        width: 100%;
+        max-width: 100%;
+        padding: 20px;
+        margin: 0;
+      }
+
+      .cover h1 {
+        font-size: 38px;
+      }
+
+      section.chapter h1 {
+        font-size: 28px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      footer.guide-footer {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="eyebrow">INTERNAL DOCUMENTATION</div>
+      <h1>La Poche</h1>
+      <div class="sub">Knowledge Base</div>
+      <div class="meta">v1.0 &nbsp;·&nbsp; June 2026</div>
+    </div>
+
+    <nav class="toc" id="toc">
+      <a href="#kb-roles"><span class="num">··</span><span>Roles &amp; access</span></a>
+      <a href="#kb-faq"><span class="num">··</span><span>FAQs</span></a>
+      <a href="#kb-troubleshoot"><span class="num">··</span><span>Troubleshooting</span></a>
+      <a href="#kb-glossary"><span class="num">··</span><span>Glossary</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      La Poche — Internal Use Only<br>ops@lapoche.com
+    </div>
+  </aside>
+
+  <main>
+
+    <div class="cover">
+      <div class="tag">KNOWLEDGE BASE</div>
+      <h1>Knowledge Base</h1>
+      <p class="lede">Role definitions, frequently asked questions, troubleshooting guidance, and a glossary of terms used across the La Poche platform.</p>
+    </div>
+
+    <section class="chapter" id="kb-roles">
+      <div class="chapter-eyebrow">PART 2 · KNOWLEDGE BASE</div>
+      <h1>Roles &amp; access</h1>
+      <p>What each role can see and do on the platform.</p>
+      <table>
+        <thead><tr><th style="width:22%">Role</th><th>Typical access</th></tr></thead>
+        <tbody>
+          <tr><td>Administrator</td><td>Full access — products, orders, inventory, marketplaces, finance, reports, and user management.</td></tr>
+          <tr><td>Sales Executive</td><td>Products and orders. Can create and update listings, view order status.</td></tr>
+          <tr><td>Operations Executive</td><td>Orders, inventory, and marketplaces. Owns the fulfillment workflow and sync recovery.</td></tr>
+          <tr><td>Finance Executive</td><td>Invoices, settlements, and financial reports. Read access to orders for reconciliation.</td></tr>
+          <tr><td>Warehouse Executive</td><td>Inventory only — stock levels, adjustments, and reorder thresholds.</td></tr>
+        </tbody>
+      </table>
+      <p>API keys inherit the permissions of the role they were generated under, so a Warehouse Executive's key can only call inventory endpoints even if the request is otherwise valid.</p>
+    </section>
+
+<section class="chapter" id="kb-faq">
+      <div class="chapter-eyebrow">PART 2 · KNOWLEDGE BASE</div>
+      <h1>Frequently asked questions</h1>
+
+      <details class="faq">
+        <summary>Why can't I move an order straight from "new" to "shipped"?</summary>
+        <div class="faq-body"><p>Orders must follow the standard fulfillment sequence: new → payment confirmed → processing → packed → shipped → delivered. Skipping a step returns an <code>invalid_status_transition</code> error. This keeps the audit trail accurate for every order.</p></div>
+      </details>
+
+      <details class="faq">
+        <summary>A product won't save — it says the SKU already exists. What do I do?</summary>
+        <div class="faq-body"><p>SKUs must be unique across the whole catalog. Search the catalog for the SKU first — it may belong to a deactivated product. If so, reactivate that product instead of creating a new one.</p></div>
+      </details>
+
+      <details class="faq">
+        <summary>How do I know if a product is low on stock?</summary>
+        <div class="faq-body"><p>Each product has a status of <code>in_stock</code>, <code>low_stock</code>, or <code>out_of_stock</code>, based on its current quantity against its reorder threshold. Low-stock items also trigger an <code>inventory.low_stock</code> alert if webhooks are configured.</p></div>
+      </details>
+
+      <details class="faq">
+        <summary>Why did a marketplace sync fail?</summary>
+        <div class="faq-body"><p>Most often it's an expired OAuth connection or a temporary issue on the marketplace's side. Try a manual sync first; if it keeps failing, the channel likely needs to be reconnected from the dashboard. See the Marketplace Sync Recovery SOP.</p></div>
+      </details>
+
+      <details class="faq">
+        <summary>Where do I see GST on an order?</summary>
+        <div class="faq-body"><p>The invoice for each order breaks out the subtotal, GST rate, GST amount, and final total. Pull it from the order's invoice record or generate a tax report for a date range.</p></div>
+      </details>
+
+      <details class="faq">
+        <summary>Can a Sales Executive deactivate a user?</summary>
+        <div class="faq-body"><p>No — user management is restricted to Administrators. A Sales Executive's key will receive a 403 Forbidden if it attempts to call a Users endpoint.</p></div>
+      </details>
+    </section>
+
+<section class="chapter" id="kb-troubleshoot">
+      <div class="chapter-eyebrow">PART 2 · KNOWLEDGE BASE</div>
+      <h1>Troubleshooting</h1>
+      <table>
+        <thead><tr><th style="width:30%">Symptom</th><th style="width:35%">Likely cause</th><th>What to do</th></tr></thead>
+        <tbody>
+          <tr><td>Order stuck in <code>new</code> for over 24 hours</td><td>Payment not yet confirmed on the source marketplace, or the order wasn't picked up during the morning check</td><td>Check payment status on the marketplace directly; escalate to Operations Lead if payment shows cleared but La Poche hasn't updated</td></tr>
+          <tr><td>Stock count doesn't match the shelf</td><td>Unlogged manual pick, missed return, or a previous adjustment with the wrong sign</td><td>Run a recount adjustment and review the SKU's recent stock movement history</td></tr>
+          <tr><td>Marketplace shows <code>sync_failed</code></td><td>Expired OAuth token or a marketplace-side outage</td><td>Trigger a manual sync; reconnect via OAuth if it persists</td></tr>
+          <tr><td>Settlement total doesn't match expected revenue</td><td>Marketplace commission, fee changes, or an unprocessed refund</td><td>Pull the settlement and tax reports for the period and compare line by line</td></tr>
+          <tr><td>New user hasn't received an invite</td><td>Typo in the email address, or it landed in spam</td><td>Confirm the email on file, ask them to check spam, re-trigger the invite if needed</td></tr>
+          <tr><td>API requests returning 429</td><td>Rate limit exceeded — standard keys are capped at 120 requests/minute</td><td>Back off and retry after the time given in the rate-limit reset header</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+<section class="chapter" id="kb-glossary">
+      <div class="chapter-eyebrow">PART 2 · KNOWLEDGE BASE</div>
+      <h1>Glossary</h1>
+      <dl class="glossary">
+        <dt>SKU</dt><dd>Stock Keeping Unit — the unique code identifying a specific product or variant in the catalog.</dd>
+        <dt>Channel</dt><dd>A connected marketplace (e.g. Amazon, Flipkart, Shopify) that orders import from and listings sync to.</dd>
+        <dt>Reorder threshold</dt><dd>The stock quantity at which a product is flagged <code>low_stock</code> and an alert is triggered.</dd>
+        <dt>Settlement</dt><dd>A payout record from a marketplace, itemizing fees and commissions deducted from order revenue.</dd>
+        <dt>Sync</dt><dd>The process of pushing product and stock data from La Poche to a connected marketplace, or pulling orders in.</dd>
+        <dt>Fulfillment workflow</dt><dd>The fixed sequence an order moves through: new → payment confirmed → processing → packed → shipped → delivered.</dd>
+        <dt>Webhook</dt><dd>An automatic notification sent to a configured endpoint when an event occurs (e.g. <code>order.created</code>), instead of polling the API.</dd>
+      </dl>
+    </section>
+
+    <footer class="guide-footer">
+      <span>La Poche — Knowledge Base</span>
+      <span>v1.0 · June 2026</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  const links = document.querySelectorAll('nav.toc a');
+  const sections = document.querySelectorAll('section.chapter');
+  const setActive = () => {
+    let current = sections[0].id;
+    const scrollPos = window.scrollY + 120;
+    sections.forEach(sec => { if (sec.offsetTop <= scrollPos) current = sec.id; });
+    links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+  };
+  window.addEventListener('scroll', setActive);
+  setActive();
+</script>
+</body>
+</html>
