@@ -1,872 +1,1325 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>La Poche — User Guide</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#1C1F26;
-    --teal:#285C4D;
-    --teal-bg:#E7EFE9;
-    --rust:#B5562B;
-    --rust-bg:#F5E8E0;
-    --muted:#6B7077;
-    --paper:#FBFAF7;
-    --paper-raised:#FFFFFF;
-    --border:#E2DFD6;
-    --border-strong:#CFCBBF;
-    --gutter-w:280px;
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family:"IBM Plex Sans",Arial,sans-serif;
-    font-size:16px;
-    line-height:1.65;
-  }
-  a{color:var(--teal);}
-
-  /* ---------- layout shell ---------- */
-  .shell{
-    display:grid;
-    grid-template-columns:var(--gutter-w) 1fr;
-    min-height:100vh;
-  }
-  .sidebar{
-    position:sticky;
-    top:0;
-    height:100vh;
-    overflow-y:auto;
-    background:var(--paper-raised);
-    border-right:1px solid var(--border);
-    padding:32px 0 40px;
-  }
-  .brand{
-    padding:0 28px 24px;
-    border-bottom:1px solid var(--border);
-    margin-bottom:18px;
-  }
-  .brand .eyebrow{
-    font-family:"IBM Plex Mono",monospace;
-    font-size:11px;
-    letter-spacing:.12em;
-    color:var(--rust);
-    font-weight:500;
-  }
-  .brand h1{
-    font-family:"Fraunces",serif;
-    font-size:30px;
-    font-weight:600;
-    margin:6px 0 4px;
-    color:var(--ink);
-  }
-  .brand .sub{
-    font-size:13px;
-    color:var(--muted);
-  }
-  .brand .meta{
-    margin-top:10px;
-    font-family:"IBM Plex Mono",monospace;
-    font-size:11px;
-    color:var(--muted);
-  }
-
-  nav.toc{padding:0 14px;}
-  nav.toc a{
-    display:flex;
-    gap:10px;
-    align-items:baseline;
-    text-decoration:none;
-    color:var(--ink);
-    padding:8px 14px;
-    border-radius:4px;
-    font-size:14px;
-    border-left:2px solid transparent;
-  }
-  nav.toc a:hover{background:var(--teal-bg);}
-  nav.toc a.active{
-    background:var(--teal-bg);
-    border-left:2px solid var(--teal);
-    color:var(--teal);
-    font-weight:500;
-  }
-  nav.toc .num{
-    font-family:"IBM Plex Mono",monospace;
-    font-size:11px;
-    color:var(--muted);
-    min-width:18px;
-  }
-  nav.toc a.active .num{color:var(--teal);}
-
-  .sidebar-footer{
-    padding:20px 28px 0;
-    margin-top:18px;
-    border-top:1px solid var(--border);
-    font-family:"IBM Plex Mono",monospace;
-    font-size:11px;
-    color:var(--muted);
-  }
-
-  /* ---------- main content ---------- */
-  main{
-    padding:64px 64px 120px;
-    max-width:840px;
-  }
-  .cover{
-    padding-bottom:48px;
-    margin-bottom:56px;
-    border-bottom:1px solid var(--border);
-  }
-  .cover .tag{
-    font-family:"IBM Plex Mono",monospace;
-    font-size:12px;
-    letter-spacing:.14em;
-    color:var(--rust);
-    font-weight:500;
-  }
-  .cover h1{
-    font-family:"Fraunces",serif;
-    font-size:54px;
-    font-weight:600;
-    margin:10px 0 8px;
-    line-height:1.05;
-  }
-  .cover .lede{
-    font-size:19px;
-    color:#3D4148;
-    margin:0 0 18px;
-    max-width:560px;
-  }
-  .cover .howto{
-    margin-top:24px;
-    font-style:italic;
-    color:var(--muted);
-    font-size:14px;
-    max-width:600px;
-    border-top:1px solid var(--border);
-    padding-top:18px;
-  }
-
-  section.chapter{
-    padding-top:24px;
-    margin-bottom:64px;
-    scroll-margin-top:32px;
-  }
-  section.chapter .chapter-eyebrow{
-    font-family:"IBM Plex Mono",monospace;
-    font-size:12px;
-    color:var(--rust);
-    letter-spacing:.1em;
-    margin-bottom:6px;
-  }
-  section.chapter h1{
-    font-family:"Fraunces",serif;
-    font-size:36px;
-    font-weight:600;
-    margin:0 0 28px;
-    padding-bottom:14px;
-    border-bottom:2px solid var(--ink);
-  }
-  section.chapter h2{
-    font-size:21px;
-    font-weight:600;
-    margin:36px 0 14px;
-    color:var(--ink);
-  }
-  section.chapter h3{
-    font-size:16px;
-    font-weight:600;
-    color:var(--teal);
-    margin:22px 0 10px;
-  }
-  section.chapter p{
-    margin:0 0 14px;
-    color:#3D4148;
-  }
-  ul.bullets{
-    margin:0 0 16px;
-    padding-left:0;
-    list-style:none;
-  }
-  ul.bullets li{
-    position:relative;
-    padding-left:20px;
-    margin-bottom:8px;
-    color:#3D4148;
-  }
-  ul.bullets li::before{
-    content:"";
-    position:absolute;
-    left:4px;
-    top:10px;
-    width:5px;
-    height:5px;
-    border-radius:50%;
-    background:var(--teal);
-  }
-  ol.steps{
-    margin:0 0 18px;
-    padding-left:0;
-    list-style:none;
-    counter-reset:step;
-  }
-  ol.steps li{
-    counter-increment:step;
-    position:relative;
-    padding-left:36px;
-    margin-bottom:12px;
-    color:#3D4148;
-  }
-  ol.steps li::before{
-    content:counter(step);
-    position:absolute;
-    left:0;
-    top:0;
-    width:22px;
-    height:22px;
-    border-radius:4px;
-    background:var(--teal-bg);
-    color:var(--teal);
-    font-family:"IBM Plex Mono",monospace;
-    font-size:12px;
-    font-weight:500;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  table{
-    width:100%;
-    border-collapse:collapse;
-    margin:0 0 24px;
-    font-size:14.5px;
-  }
-  caption{
-    text-align:left;
-    font-size:12px;
-    color:var(--muted);
-    margin-bottom:6px;
-    font-family:"IBM Plex Mono",monospace;
-  }
-  thead th{
-    text-align:left;
-    background:#F2F1ED;
-    color:var(--ink);
-    font-weight:600;
-    padding:9px 12px;
-    border:1px solid var(--border);
-  }
-  tbody td{
-    padding:9px 12px;
-    border:1px solid var(--border);
-    color:#3D4148;
-    vertical-align:top;
-  }
-  tbody tr:nth-child(even){background:#FCFCFA;}
-
-  .callout{
-    border-left:3px solid var(--teal);
-    background:var(--teal-bg);
-    padding:14px 18px;
-    border-radius:0 6px 6px 0;
-    margin:8px 0 28px;
-  }
-  .callout.warn{
-    border-left-color:var(--rust);
-    background:var(--rust-bg);
-  }
-  .callout .label{
-    font-family:"IBM Plex Mono",monospace;
-    font-size:11px;
-    font-weight:500;
-    letter-spacing:.08em;
-    color:var(--teal);
-    margin-bottom:5px;
-  }
-  .callout.warn .label{color:var(--rust);}
-  .callout p{margin:0;font-size:14.5px;color:#3D4148;}
-
-  .colorswatches{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-bottom:20px;
-  }
-  .swatch{
-    font-size:13px;
-    color:#3D4148;
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:5px 12px;
-  }
-
-  footer.guide-footer{
-    border-top:1px solid var(--border);
-    margin-top:60px;
-    padding-top:24px;
-    font-family:"IBM Plex Mono",monospace;
-    font-size:12px;
-    color:var(--muted);
-    display:flex;
-    justify-content:space-between;
-  }
-
-  .mobile-toggle{display:none;}
-
-  @media (max-width:880px){
-    .shell{grid-template-columns:1fr;}
-    .sidebar{
-      position:relative;
-      height:auto;
-      border-right:none;
-      border-bottom:1px solid var(--border);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Poche — User Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1C1F26;
+      --teal: #285C4D;
+      --teal-bg: #E7EFE9;
+      --rust: #B5562B;
+      --rust-bg: #F5E8E0;
+      --muted: #6B7077;
+      --paper: #FBFAF7;
+      --paper-raised: #FFFFFF;
+      --border: #E2DFD6;
+      --border-strong: #CFCBBF;
+      --gutter-w: 280px;
     }
-    main{padding:40px 24px 80px;}
-    .cover h1{font-size:38px;}
-    section.chapter h1{font-size:28px;}
-  }
-</style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--teal);
+    }
+
+    /* ---------- layout shell ---------- */
+    .shell {
+      display: grid;
+      grid-template-columns: var(--gutter-w) 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--paper-raised);
+      border-right: 1px solid var(--border);
+      padding: 32px 0 40px;
+    }
+
+    .brand {
+      padding: 0 28px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
+    .brand .eyebrow {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: .12em;
+      color: var(--rust);
+      font-weight: 500;
+    }
+
+    .brand h1 {
+      font-family: "Fraunces", serif;
+      font-size: 30px;
+      font-weight: 600;
+      margin: 6px 0 4px;
+      color: var(--ink);
+    }
+
+    .brand .sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .brand .meta {
+      margin-top: 10px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    nav.toc {
+      padding: 0 14px;
+    }
+
+    nav.toc a {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      text-decoration: none;
+      color: var(--ink);
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-size: 14px;
+      border-left: 2px solid transparent;
+    }
+
+    nav.toc a:hover {
+      background: var(--teal-bg);
+    }
+
+    nav.toc a.active {
+      background: var(--teal-bg);
+      border-left: 2px solid var(--teal);
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    nav.toc .num {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+      min-width: 18px;
+    }
+
+    nav.toc a.active .num {
+      color: var(--teal);
+    }
+
+    .sidebar-footer {
+      padding: 20px 28px 0;
+      margin-top: 18px;
+      border-top: 1px solid var(--border);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ---------- main content ---------- */
+    main {
+      padding: 64px 64px 120px;
+      max-width: 840px;
+    }
+
+    .cover {
+      padding-bottom: 48px;
+      margin-bottom: 56px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cover .tag {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: .14em;
+      color: var(--rust);
+      font-weight: 500;
+    }
+
+    .cover h1 {
+      font-family: "Fraunces", serif;
+      font-size: 54px;
+      font-weight: 600;
+      margin: 10px 0 8px;
+      line-height: 1.05;
+    }
+
+    .cover .lede {
+      font-size: 19px;
+      color: #3D4148;
+      margin: 0 0 18px;
+      max-width: 560px;
+    }
+
+    .cover .howto {
+      margin-top: 24px;
+      font-style: italic;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 600px;
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+    }
+
+    section.chapter {
+      padding-top: 24px;
+      margin-bottom: 64px;
+      scroll-margin-top: 32px;
+    }
+
+    section.chapter .chapter-eyebrow {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      color: var(--rust);
+      letter-spacing: .1em;
+      margin-bottom: 6px;
+    }
+
+    section.chapter h1 {
+      font-family: "Fraunces", serif;
+      font-size: 36px;
+      font-weight: 600;
+      margin: 0 0 28px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    section.chapter h2 {
+      font-size: 21px;
+      font-weight: 600;
+      margin: 36px 0 14px;
+      color: var(--ink);
+    }
+
+    section.chapter h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--teal);
+      margin: 22px 0 10px;
+    }
+
+    section.chapter p {
+      margin: 0 0 14px;
+      color: #3D4148;
+    }
+
+    ul.bullets {
+      margin: 0 0 16px;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    ul.bullets li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 8px;
+      color: #3D4148;
+    }
+
+    ul.bullets li::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 10px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    ol.steps {
+      margin: 0 0 18px;
+      padding-left: 0;
+      list-style: none;
+      counter-reset: step;
+    }
+
+    ol.steps li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 36px;
+      margin-bottom: 12px;
+      color: #3D4148;
+    }
+
+    ol.steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      background: var(--teal-bg);
+      color: var(--teal);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 0 24px;
+      font-size: 14.5px;
+    }
+
+    caption {
+      text-align: left;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    thead th {
+      text-align: left;
+      background: #F2F1ED;
+      color: var(--ink);
+      font-weight: 600;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+    }
+
+    tbody td {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      color: #3D4148;
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #FCFCFA;
+    }
+
+    .callout {
+      border-left: 3px solid var(--teal);
+      background: var(--teal-bg);
+      padding: 14px 18px;
+      border-radius: 0 6px 6px 0;
+      margin: 8px 0 28px;
+    }
+
+    .callout.warn {
+      border-left-color: var(--rust);
+      background: var(--rust-bg);
+    }
+
+    .callout .label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .08em;
+      color: var(--teal);
+      margin-bottom: 5px;
+    }
+
+    .callout.warn .label {
+      color: var(--rust);
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 14.5px;
+      color: #3D4148;
+    }
+
+    .colorswatches {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .swatch {
+      font-size: 13px;
+      color: #3D4148;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px;
+    }
+
+    footer.guide-footer {
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+      padding-top: 24px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .mobile-toggle {
+      display: none;
+    }
+
+    @media (max-width:880px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      main {
+        padding: 40px 24px 80px;
+      }
+
+      .cover h1 {
+        font-size: 38px;
+      }
+
+      section.chapter h1 {
+        font-size: 28px;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .container,
+    .main,
+    .content {
+      width: 100%;
+      max-width: 100%;
+      padding: 16px;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="shell">
+  <div class="shell">
 
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="eyebrow">USER GUIDE</div>
-      <h1>La Poche</h1>
-      <div class="sub">Ecommerce Management Platform</div>
-      <div class="meta">Version 2.0 &nbsp;·&nbsp; June 2026</div>
-    </div>
-    <nav class="toc" id="toc">
-      <a href="#ch1"><span class="num">01</span><span>Introduction</span></a>
-      <a href="#ch2"><span class="num">02</span><span>Dashboard overview</span></a>
-      <a href="#ch3"><span class="num">03</span><span>Product management</span></a>
-      <a href="#ch4"><span class="num">04</span><span>Sales management</span></a>
-      <a href="#ch5"><span class="num">05</span><span>Marketplace integration</span></a>
-      <a href="#ch6"><span class="num">06</span><span>Inventory management</span></a>
-      <a href="#ch7"><span class="num">07</span><span>Finance management</span></a>
-      <a href="#ch8"><span class="num">08</span><span>Reports</span></a>
-      <a href="#ch9"><span class="num">09</span><span>User management</span></a>
-      <a href="#ch10"><span class="num">10</span><span>Support</span></a>
-    </nav>
-    <div class="sidebar-footer">
-      La Poche — User Guide<br>support@lapoche.com
-    </div>
-  </aside>
-
-  <main>
-
-    <div class="cover">
-      <div class="tag">USER GUIDE</div>
-      <h1>La Poche</h1>
-      <p class="lede">Ecommerce Management Platform — Version 2.0, Modernized Edition</p>
-      <p class="howto">How to use this guide: each chapter opens with an overview and key features, walks through the core task as numbered steps, and closes with troubleshooting for the issues users hit most often.</p>
-    </div>
-
-    <!-- 1. Introduction -->
-    <section class="chapter" id="ch1">
-      <div class="chapter-eyebrow">CHAPTER 01</div>
-      <h1>Introduction</h1>
-
-      <h2>Overview</h2>
-      <p>La Poche is an integrated ecommerce management platform built for businesses that sell across multiple online marketplaces and sales channels. It brings sales, operations, finance, inventory, product management, and customer management into a single workspace, so teams stop reconciling the same order or stock count across five different tools.</p>
-
-      <h2>Who this guide is for</h2>
-      <p>This guide is written for the people who use La Poche day to day: sales and operations staff processing orders, inventory and warehouse staff managing stock, finance staff reconciling payments, and administrators managing users and permissions. Each chapter notes which role it's most relevant to.</p>
-
-      <h2>What La Poche does</h2>
-      <ul class="bullets">
-        <li>Manages products and inventory from one catalog</li>
-        <li>Synchronizes products, stock, and orders across connected marketplaces</li>
-        <li>Processes customer orders from receipt to delivery</li>
-        <li>Generates invoices and tracks payments and settlements</li>
-        <li>Monitors sales performance and produces business reports</li>
-      </ul>
-
-      <div class="callout">
-        <div class="label">BEFORE YOU START</div>
-        <p>You'll need an active La Poche account and a role assigned by your administrator. If you don't see a module mentioned in this guide, your role likely doesn't have access to it — see Chapter 9, User Management.</p>
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="eyebrow">USER GUIDE</div>
+        <h1>La Poche</h1>
+        <div class="sub">Ecommerce Management Platform</div>
+        <div class="meta">Version 2.0 &nbsp;·&nbsp; June 2026</div>
       </div>
-    </section>
+      <nav class="toc" id="toc">
+        <a href="#ch1"><span class="num">01</span><span>Introduction</span></a>
+        <a href="#ch2"><span class="num">02</span><span>Dashboard overview</span></a>
+        <a href="#ch3"><span class="num">03</span><span>Product management</span></a>
+        <a href="#ch4"><span class="num">04</span><span>Sales management</span></a>
+        <a href="#ch5"><span class="num">05</span><span>Marketplace integration</span></a>
+        <a href="#ch6"><span class="num">06</span><span>Inventory management</span></a>
+        <a href="#ch7"><span class="num">07</span><span>Finance management</span></a>
+        <a href="#ch8"><span class="num">08</span><span>Reports</span></a>
+        <a href="#ch9"><span class="num">09</span><span>User management</span></a>
+        <a href="#ch10"><span class="num">10</span><span>Support</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        La Poche — User Guide<br>support@lapoche.com
+      </div>
+    </aside>
 
-    <!-- 2. Dashboard Overview -->
-    <section class="chapter" id="ch2">
-      <div class="chapter-eyebrow">CHAPTER 02</div>
-      <h1>Dashboard overview</h1>
+    <main>
 
-      <h2>Overview</h2>
-      <p>The dashboard is the first screen you see after logging in. It's designed to answer one question at a glance: "is anything that needs my attention happening right now?"</p>
-
-      <h2>Main features</h2>
-      <table>
-        <thead><tr><th style="width:32%">Widget</th><th>What it shows</th></tr></thead>
-        <tbody>
-          <tr><td>Total Orders</td><td>Order count for the selected date range, across all connected channels</td></tr>
-          <tr><td>Revenue Summary</td><td>Gross revenue for the selected period, broken down by channel</td></tr>
-          <tr><td>Pending Deliveries</td><td>Orders that are packed or shipped but not yet marked delivered</td></tr>
-          <tr><td>Inventory Status</td><td>A live count of in-stock, low-stock, and out-of-stock products</td></tr>
-          <tr><td>Recent Transactions</td><td>The latest payments, refunds, and settlements</td></tr>
-          <tr><td>Top Selling Products</td><td>Best performers by units sold for the selected period</td></tr>
-          <tr><td>Marketplace Performance</td><td>Orders and revenue compared across each connected channel</td></tr>
-        </tbody>
-      </table>
-
-      <h2>Reading the dashboard</h2>
-      <ol class="steps">
-        <li>Log in with your registered email and password.</li>
-        <li>Select a date range from the top-right filter — Today, This Week, This Month, or Custom.</li>
-        <li>Review Pending Deliveries first; this is the queue most likely to need same-day action.</li>
-        <li>Check Inventory Status for any product showing Low Stock or Out of Stock.</li>
-        <li>Click any widget to drill into the full report behind it.</li>
-      </ol>
-
-      <h2>Troubleshooting</h2>
-      <table>
-        <thead><tr><th>Issue</th><th>Likely cause</th><th>What to do</th></tr></thead>
-        <tbody>
-          <tr><td>Dashboard numbers look out of date</td><td>A connected marketplace hasn't synced recently</td><td>Check sync status in Chapter 5, Marketplace Integration</td></tr>
-          <tr><td>Revenue Summary shows ₹0 for a known sales day</td><td>Date range filter is set incorrectly</td><td>Confirm the filter matches the period you expect</td></tr>
-          <tr><td>A widget is missing entirely</td><td>Your role doesn't have permission to view it</td><td>Ask an administrator to review your role under Chapter 9</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- 3. Product Management -->
-    <section class="chapter" id="ch3">
-      <div class="chapter-eyebrow">CHAPTER 03</div>
-      <h1>Product management</h1>
-
-      <h2>Overview</h2>
-      <p>The Product Catalog is where every item you sell is defined once, then pushed out to every connected marketplace. Getting the catalog structure right here is what keeps listings consistent across channels.</p>
-
-      <h2>Main features</h2>
-      <ul class="bullets">
-        <li>Centralized product catalog shared across all connected channels</li>
-        <li>Structured fields for variants — color, size, and material</li>
-        <li>Bulk product image upload</li>
-        <li>Active / Inactive status to control marketplace visibility</li>
-      </ul>
-
-      <h2>Product structure</h2>
-      <p>Each product record contains the following fields:</p>
-      <table>
-        <thead><tr><th style="width:28%">Field</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td>Product Name</td><td>Name of the product as shown to customers</td></tr>
-          <tr><td>SKU</td><td>Unique product code used internally and across marketplaces</td></tr>
-          <tr><td>Category</td><td>Product category, used for catalog navigation and reporting</td></tr>
-          <tr><td>Color</td><td>Available color variant</td></tr>
-          <tr><td>Size</td><td>Product dimensions or size variant</td></tr>
-          <tr><td>Price</td><td>Selling price shown to customers</td></tr>
-          <tr><td>Stock Quantity</td><td>Units currently available to sell</td></tr>
-          <tr><td>Product Images</td><td>Product photographs shown on listings</td></tr>
-          <tr><td>Status</td><td>Active (visible for sale) or Inactive (hidden from all channels)</td></tr>
-        </tbody>
-      </table>
-
-      <h2>Sample product reference</h2>
-      <p>The table below shows a fully completed product record, used as a reference when creating new listings.</p>
-      <table>
-        <thead><tr><th style="width:32%">Attribute</th><th>Value</th></tr></thead>
-        <tbody>
-          <tr><td>Product Name</td><td>Premium Jute Tote Bag</td></tr>
-          <tr><td>SKU</td><td>JHB-001</td></tr>
-          <tr><td>Color</td><td>Natural Brown</td></tr>
-          <tr><td>Size</td><td>15 x 12 x 5 Inches</td></tr>
-          <tr><td>Material</td><td>Eco-Friendly Jute</td></tr>
-          <tr><td>Price</td><td>₹799</td></tr>
-          <tr><td>Stock Available</td><td>250</td></tr>
-        </tbody>
-      </table>
-
-      <h3>Available colors</h3>
-      <div class="colorswatches">
-        <span class="swatch">Natural Brown</span>
-        <span class="swatch">Beige</span>
-        <span class="swatch">Green</span>
-        <span class="swatch">Blue</span>
-        <span class="swatch">Black</span>
+      <div class="cover">
+        <div class="tag">USER GUIDE</div>
+        <h1>La Poche</h1>
+        <p class="lede">Ecommerce Management Platform — Version 2.0, Modernized Edition</p>
+        <p class="howto">How to use this guide: each chapter opens with an overview and key features, walks through the
+          core task as numbered steps, and closes with troubleshooting for the issues users hit most often.</p>
       </div>
 
-      <h3>Available sizes</h3>
-      <table>
-        <thead><tr><th style="width:28%">Size</th><th>Dimensions</th></tr></thead>
-        <tbody>
-          <tr><td>Small</td><td>10 x 8 x 4 Inches</td></tr>
-          <tr><td>Medium</td><td>15 x 12 x 5 Inches</td></tr>
-          <tr><td>Large</td><td>18 x 14 x 6 Inches</td></tr>
-        </tbody>
-      </table>
+      <!-- 1. Introduction -->
+      <section class="chapter" id="ch1">
+        <div class="chapter-eyebrow">CHAPTER 01</div>
+        <h1>Introduction</h1>
 
-      <h2>Add a new product</h2>
-      <ol class="steps">
-        <li>Go to Product Management → Product Catalog → Add Product.</li>
-        <li>Enter the product name, category, and a unique SKU.</li>
-        <li>Add variant details — color and size — if the product has more than one variant.</li>
-        <li>Set the selling price and starting stock quantity.</li>
-        <li>Upload at least one product image; marketplaces typically reject listings with none.</li>
-        <li>Set Status to Active to make the product visible on every connected channel, or Inactive to keep it hidden while you finish setup.</li>
-        <li>Save. La Poche queues the product for sync to all connected marketplaces.</li>
-      </ol>
+        <h2>Overview</h2>
+        <p>La Poche is an integrated ecommerce management platform built for businesses that sell across multiple online
+          marketplaces and sales channels. It brings sales, operations, finance, inventory, product management, and
+          customer management into a single workspace, so teams stop reconciling the same order or stock count across
+          five different tools.</p>
 
-      <div class="callout">
-        <div class="label">TIP</div>
-        <p>Use a consistent SKU pattern (like JHB-001 for Jute Handbag) across your catalog — it makes inventory and sales reports far easier to scan later.</p>
-      </div>
+        <h2>Who this guide is for</h2>
+        <p>This guide is written for the people who use La Poche day to day: sales and operations staff processing
+          orders, inventory and warehouse staff managing stock, finance staff reconciling payments, and administrators
+          managing users and permissions. Each chapter notes which role it's most relevant to.</p>
 
-      <h2>Troubleshooting</h2>
-      <table>
-        <thead><tr><th>Issue</th><th>Likely cause</th><th>What to do</th></tr></thead>
-        <tbody>
-          <tr><td>New product doesn't appear on a marketplace</td><td>Sync hasn't completed, or the channel requires fields La Poche doesn't enforce</td><td>Check sync status; confirm required fields for that marketplace are filled in</td></tr>
-          <tr><td>SKU error on save</td><td>SKU is already in use by another product</td><td>Choose a unique SKU — duplicates aren't allowed</td></tr>
-          <tr><td>Product shows wrong price on a channel</td><td>A channel-specific price override is set</td><td>Check Marketplace Integration → Price overrides for that channel</td></tr>
-        </tbody>
-      </table>
-    </section>
+        <h2>What La Poche does</h2>
+        <ul class="bullets">
+          <li>Manages products and inventory from one catalog</li>
+          <li>Synchronizes products, stock, and orders across connected marketplaces</li>
+          <li>Processes customer orders from receipt to delivery</li>
+          <li>Generates invoices and tracks payments and settlements</li>
+          <li>Monitors sales performance and produces business reports</li>
+        </ul>
 
-    <!-- 4. Sales Management -->
-    <section class="chapter" id="ch4">
-      <div class="chapter-eyebrow">CHAPTER 04</div>
-      <h1>Sales management</h1>
+        <div class="callout">
+          <div class="label">BEFORE YOU START</div>
+          <p>You'll need an active La Poche account and a role assigned by your administrator. If you don't see a module
+            mentioned in this guide, your role likely doesn't have access to it — see Chapter 9, User Management.</p>
+        </div>
+      </section>
 
-      <h2>Overview</h2>
-      <p>Orders placed on any connected marketplace flow into La Poche automatically. From here, one team can process every order the same way, regardless of which channel it came from.</p>
+      <!-- 2. Dashboard Overview -->
+      <section class="chapter" id="ch2">
+        <div class="chapter-eyebrow">CHAPTER 02</div>
+        <h1>Dashboard overview</h1>
 
-      <h2>Main features</h2>
-      <ul class="bullets">
-        <li>Automatic order import from all connected marketplaces</li>
-        <li>A single workflow for order status, regardless of source channel</li>
-        <li>One-click invoice generation</li>
-        <li>Shipment tracking and returns management</li>
-      </ul>
+        <h2>Overview</h2>
+        <p>The dashboard is the first screen you see after logging in. It's designed to answer one question at a glance:
+          "is anything that needs my attention happening right now?"</p>
 
-      <h2>Order workflow</h2>
-      <p>Every order moves through the same six stages, in order:</p>
-      <table>
-        <thead><tr><th style="width:28%">Stage</th><th>What it means</th></tr></thead>
-        <tbody>
-          <tr><td>New Order</td><td>Order received from a marketplace, not yet confirmed</td></tr>
-          <tr><td>Payment Confirmed</td><td>Payment has cleared and the order is ready to fulfill</td></tr>
-          <tr><td>Processing</td><td>Order is being picked and prepared</td></tr>
-          <tr><td>Packed</td><td>Order is packed and ready for courier pickup</td></tr>
-          <tr><td>Shipped</td><td>Order has left the warehouse with a tracking number assigned</td></tr>
-          <tr><td>Delivered</td><td>Courier has confirmed delivery to the customer</td></tr>
-        </tbody>
-      </table>
+        <h2>Main features</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:32%">Widget</th>
+              <th>What it shows</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Total Orders</td>
+              <td>Order count for the selected date range, across all connected channels</td>
+            </tr>
+            <tr>
+              <td>Revenue Summary</td>
+              <td>Gross revenue for the selected period, broken down by channel</td>
+            </tr>
+            <tr>
+              <td>Pending Deliveries</td>
+              <td>Orders that are packed or shipped but not yet marked delivered</td>
+            </tr>
+            <tr>
+              <td>Inventory Status</td>
+              <td>A live count of in-stock, low-stock, and out-of-stock products</td>
+            </tr>
+            <tr>
+              <td>Recent Transactions</td>
+              <td>The latest payments, refunds, and settlements</td>
+            </tr>
+            <tr>
+              <td>Top Selling Products</td>
+              <td>Best performers by units sold for the selected period</td>
+            </tr>
+            <tr>
+              <td>Marketplace Performance</td>
+              <td>Orders and revenue compared across each connected channel</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <h2>Process a new order</h2>
-      <ol class="steps">
-        <li>Open Sales Management → Orders and filter by status New Order.</li>
-        <li>Open the order and confirm payment status matches what the marketplace reports.</li>
-        <li>Move the order to Processing and generate the pick list.</li>
-        <li>Once packed, mark the order Packed — this triggers the shipping label if you use an integrated courier.</li>
-        <li>Enter the tracking number and mark the order Shipped.</li>
-        <li>Generate the invoice from the order detail page; it's emailed to the customer automatically.</li>
-        <li>When the courier confirms delivery — automatically or manually — mark the order Delivered.</li>
-      </ol>
+        <h2>Reading the dashboard</h2>
+        <ol class="steps">
+          <li>Log in with your registered email and password.</li>
+          <li>Select a date range from the top-right filter — Today, This Week, This Month, or Custom.</li>
+          <li>Review Pending Deliveries first; this is the queue most likely to need same-day action.</li>
+          <li>Check Inventory Status for any product showing Low Stock or Out of Stock.</li>
+          <li>Click any widget to drill into the full report behind it.</li>
+        </ol>
 
-      <h2>Troubleshooting</h2>
-      <table>
-        <thead><tr><th>Issue</th><th>Likely cause</th><th>What to do</th></tr></thead>
-        <tbody>
-          <tr><td>Order stuck on New Order</td><td>Payment hasn't been confirmed by the marketplace yet</td><td>Wait for marketplace confirmation, or check the order directly on the source channel</td></tr>
-          <tr><td>Invoice missing GST details</td><td>Customer or business tax details are incomplete</td><td>Complete tax details under Finance Management before regenerating</td></tr>
-          <tr><td>Tracking number doesn't update status automatically</td><td>Courier integration isn't connected for that shipment method</td><td>Update status manually, or connect the courier under Marketplace Integration</td></tr>
-        </tbody>
-      </table>
-    </section>
+        <h2>Troubleshooting</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Likely cause</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dashboard numbers look out of date</td>
+              <td>A connected marketplace hasn't synced recently</td>
+              <td>Check sync status in Chapter 5, Marketplace Integration</td>
+            </tr>
+            <tr>
+              <td>Revenue Summary shows ₹0 for a known sales day</td>
+              <td>Date range filter is set incorrectly</td>
+              <td>Confirm the filter matches the period you expect</td>
+            </tr>
+            <tr>
+              <td>A widget is missing entirely</td>
+              <td>Your role doesn't have permission to view it</td>
+              <td>Ask an administrator to review your role under Chapter 9</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-    <!-- 5. Marketplace Integration -->
-    <section class="chapter" id="ch5">
-      <div class="chapter-eyebrow">CHAPTER 05</div>
-      <h1>Marketplace integration</h1>
+      <!-- 3. Product Management -->
+      <section class="chapter" id="ch3">
+        <div class="chapter-eyebrow">CHAPTER 03</div>
+        <h1>Product management</h1>
 
-      <h2>Overview</h2>
-      <p>La Poche connects to the marketplaces you already sell on, so products, stock, and orders stay in sync without manual re-entry on each channel.</p>
+        <h2>Overview</h2>
+        <p>The Product Catalog is where every item you sell is defined once, then pushed out to every connected
+          marketplace. Getting the catalog structure right here is what keeps listings consistent across channels.</p>
 
-      <h2>Supported channels</h2>
-      <ul class="bullets">
-        <li>Amazon</li>
-        <li>Flipkart</li>
-        <li>Meesho</li>
-        <li>Shopify</li>
-        <li>WooCommerce</li>
-        <li>Own Website</li>
-      </ul>
+        <h2>Main features</h2>
+        <ul class="bullets">
+          <li>Centralized product catalog shared across all connected channels</li>
+          <li>Structured fields for variants — color, size, and material</li>
+          <li>Bulk product image upload</li>
+          <li>Active / Inactive status to control marketplace visibility</li>
+        </ul>
 
-      <h2>Main features</h2>
-      <ul class="bullets">
-        <li>Product synchronization — push catalog changes to every connected channel</li>
-        <li>Inventory synchronization — stock levels update everywhere in near real time</li>
-        <li>Order synchronization — orders import automatically as they're placed</li>
-        <li>Price updates — change a price once, apply it everywhere or per channel</li>
-        <li>Settlement tracking — match marketplace payouts to individual orders</li>
-      </ul>
+        <h2>Product structure</h2>
+        <p>Each product record contains the following fields:</p>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:28%">Field</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Product Name</td>
+              <td>Name of the product as shown to customers</td>
+            </tr>
+            <tr>
+              <td>SKU</td>
+              <td>Unique product code used internally and across marketplaces</td>
+            </tr>
+            <tr>
+              <td>Category</td>
+              <td>Product category, used for catalog navigation and reporting</td>
+            </tr>
+            <tr>
+              <td>Color</td>
+              <td>Available color variant</td>
+            </tr>
+            <tr>
+              <td>Size</td>
+              <td>Product dimensions or size variant</td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td>Selling price shown to customers</td>
+            </tr>
+            <tr>
+              <td>Stock Quantity</td>
+              <td>Units currently available to sell</td>
+            </tr>
+            <tr>
+              <td>Product Images</td>
+              <td>Product photographs shown on listings</td>
+            </tr>
+            <tr>
+              <td>Status</td>
+              <td>Active (visible for sale) or Inactive (hidden from all channels)</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <h2>Connect a new marketplace</h2>
-      <ol class="steps">
-        <li>Go to Marketplace Integration → Connect Channel.</li>
-        <li>Select the marketplace you want to connect from the supported list.</li>
-        <li>Authorize La Poche using the credentials or API key requested by that marketplace.</li>
-        <li>Choose whether to sync your full catalog immediately or select specific products.</li>
-        <li>Confirm the sync — initial sync time depends on catalog size and may take up to a few hours for large catalogs.</li>
-      </ol>
+        <h2>Sample product reference</h2>
+        <p>The table below shows a fully completed product record, used as a reference when creating new listings.</p>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:32%">Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Product Name</td>
+              <td>Premium Jute Tote Bag</td>
+            </tr>
+            <tr>
+              <td>SKU</td>
+              <td>JHB-001</td>
+            </tr>
+            <tr>
+              <td>Color</td>
+              <td>Natural Brown</td>
+            </tr>
+            <tr>
+              <td>Size</td>
+              <td>15 x 12 x 5 Inches</td>
+            </tr>
+            <tr>
+              <td>Material</td>
+              <td>Eco-Friendly Jute</td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td>₹799</td>
+            </tr>
+            <tr>
+              <td>Stock Available</td>
+              <td>250</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <div class="callout warn">
-        <div class="label">WARNING</div>
-        <p>Disconnecting a marketplace does not cancel orders already placed there. Process any open orders on that channel before disconnecting.</p>
-      </div>
+        <h3>Available colors</h3>
+        <div class="colorswatches">
+          <span class="swatch">Natural Brown</span>
+          <span class="swatch">Beige</span>
+          <span class="swatch">Green</span>
+          <span class="swatch">Blue</span>
+          <span class="swatch">Black</span>
+        </div>
 
-      <h2>Troubleshooting</h2>
-      <table>
-        <thead><tr><th>Issue</th><th>Likely cause</th><th>What to do</th></tr></thead>
-        <tbody>
-          <tr><td>Channel shows "Sync failed"</td><td>Marketplace API credentials expired or were revoked</td><td>Reconnect the channel and re-authorize</td></tr>
-          <tr><td>Stock count differs between La Poche and a marketplace</td><td>Sync delay, or a manual stock edit made directly on the marketplace</td><td>Trigger a manual sync; avoid editing stock outside La Poche where possible</td></tr>
-          <tr><td>Orders from a channel aren't importing</td><td>Order sync is paused or the channel connection has expired</td><td>Check connection status and reconnect if needed</td></tr>
-        </tbody>
-      </table>
-    </section>
+        <h3>Available sizes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:28%">Size</th>
+              <th>Dimensions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Small</td>
+              <td>10 x 8 x 4 Inches</td>
+            </tr>
+            <tr>
+              <td>Medium</td>
+              <td>15 x 12 x 5 Inches</td>
+            </tr>
+            <tr>
+              <td>Large</td>
+              <td>18 x 14 x 6 Inches</td>
+            </tr>
+          </tbody>
+        </table>
 
-    <!-- 6. Inventory Management -->
-    <section class="chapter" id="ch6">
-      <div class="chapter-eyebrow">CHAPTER 06</div>
-      <h1>Inventory management</h1>
+        <h2>Add a new product</h2>
+        <ol class="steps">
+          <li>Go to Product Management → Product Catalog → Add Product.</li>
+          <li>Enter the product name, category, and a unique SKU.</li>
+          <li>Add variant details — color and size — if the product has more than one variant.</li>
+          <li>Set the selling price and starting stock quantity.</li>
+          <li>Upload at least one product image; marketplaces typically reject listings with none.</li>
+          <li>Set Status to Active to make the product visible on every connected channel, or Inactive to keep it hidden
+            while you finish setup.</li>
+          <li>Save. La Poche queues the product for sync to all connected marketplaces.</li>
+        </ol>
 
-      <h2>Overview</h2>
-      <p>The Inventory module is the single source of truth for stock — every sale, return, and manual adjustment updates the same count, which is then reflected across every connected marketplace.</p>
+        <div class="callout">
+          <div class="label">TIP</div>
+          <p>Use a consistent SKU pattern (like JHB-001 for Jute Handbag) across your catalog — it makes inventory and
+            sales reports far easier to scan later.</p>
+        </div>
 
-      <h2>Main features</h2>
-      <ul class="bullets">
-        <li>Add and adjust inventory manually or via bulk upload</li>
-        <li>View a full history of stock movements per product</li>
-        <li>Configure low-stock alerts per product</li>
-        <li>Generate inventory reports for any date range</li>
-      </ul>
+        <h2>Troubleshooting</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Likely cause</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>New product doesn't appear on a marketplace</td>
+              <td>Sync hasn't completed, or the channel requires fields La Poche doesn't enforce</td>
+              <td>Check sync status; confirm required fields for that marketplace are filled in</td>
+            </tr>
+            <tr>
+              <td>SKU error on save</td>
+              <td>SKU is already in use by another product</td>
+              <td>Choose a unique SKU — duplicates aren't allowed</td>
+            </tr>
+            <tr>
+              <td>Product shows wrong price on a channel</td>
+              <td>A channel-specific price override is set</td>
+              <td>Check Marketplace Integration → Price overrides for that channel</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-      <h2>Inventory status</h2>
-      <table>
-        <thead><tr><th style="width:24%">Status</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td>In Stock</td><td>Product is available and visible for sale on connected channels</td></tr>
-          <tr><td>Low Stock</td><td>Stock has fallen below the reorder threshold you've set</td></tr>
-          <tr><td>Out of Stock</td><td>Product is unavailable and automatically hidden from sale</td></tr>
-        </tbody>
-      </table>
+      <!-- 4. Sales Management -->
+      <section class="chapter" id="ch4">
+        <div class="chapter-eyebrow">CHAPTER 04</div>
+        <h1>Sales management</h1>
 
-      <h2>Set a low-stock alert</h2>
-      <ol class="steps">
-        <li>Open Inventory Management and select the product.</li>
-        <li>Open Stock Settings for that product.</li>
-        <li>Enter a reorder threshold — the stock level that should trigger a Low Stock alert.</li>
-        <li>Choose how you want to be notified: dashboard alert, email, or both.</li>
-        <li>Save. The product moves to Low Stock automatically once stock crosses the threshold.</li>
-      </ol>
+        <h2>Overview</h2>
+        <p>Orders placed on any connected marketplace flow into La Poche automatically. From here, one team can process
+          every order the same way, regardless of which channel it came from.</p>
 
-      <h2>Troubleshooting</h2>
-      <table>
-        <thead><tr><th>Issue</th><th>Likely cause</th><th>What to do</th></tr></thead>
-        <tbody>
-          <tr><td>No low-stock alert received despite low stock</td><td>Threshold not configured for that product</td><td>Set a reorder threshold using the steps above</td></tr>
-          <tr><td>Stock count seems wrong after a return</td><td>Return hasn't been processed through Sales Management yet</td><td>Process the return in the order record; stock updates automatically</td></tr>
-        </tbody>
-      </table>
-    </section>
+        <h2>Main features</h2>
+        <ul class="bullets">
+          <li>Automatic order import from all connected marketplaces</li>
+          <li>A single workflow for order status, regardless of source channel</li>
+          <li>One-click invoice generation</li>
+          <li>Shipment tracking and returns management</li>
+        </ul>
 
-    <!-- 7. Finance Management -->
-    <section class="chapter" id="ch7">
-      <div class="chapter-eyebrow">CHAPTER 07</div>
-      <h1>Finance management</h1>
+        <h2>Order workflow</h2>
+        <p>Every order moves through the same six stages, in order:</p>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:28%">Stage</th>
+              <th>What it means</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>New Order</td>
+              <td>Order received from a marketplace, not yet confirmed</td>
+            </tr>
+            <tr>
+              <td>Payment Confirmed</td>
+              <td>Payment has cleared and the order is ready to fulfill</td>
+            </tr>
+            <tr>
+              <td>Processing</td>
+              <td>Order is being picked and prepared</td>
+            </tr>
+            <tr>
+              <td>Packed</td>
+              <td>Order is packed and ready for courier pickup</td>
+            </tr>
+            <tr>
+              <td>Shipped</td>
+              <td>Order has left the warehouse with a tracking number assigned</td>
+            </tr>
+            <tr>
+              <td>Delivered</td>
+              <td>Courier has confirmed delivery to the customer</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <h2>Overview</h2>
-      <p>The Finance module handles everything money-related after an order is placed: invoicing, tax, payment tracking, refunds, and reconciling marketplace settlements.</p>
+        <h2>Process a new order</h2>
+        <ol class="steps">
+          <li>Open Sales Management → Orders and filter by status New Order.</li>
+          <li>Open the order and confirm payment status matches what the marketplace reports.</li>
+          <li>Move the order to Processing and generate the pick list.</li>
+          <li>Once packed, mark the order Packed — this triggers the shipping label if you use an integrated courier.
+          </li>
+          <li>Enter the tracking number and mark the order Shipped.</li>
+          <li>Generate the invoice from the order detail page; it's emailed to the customer automatically.</li>
+          <li>When the courier confirms delivery — automatically or manually — mark the order Delivered.</li>
+        </ol>
 
-      <h2>Main features</h2>
-      <ul class="bullets">
-        <li>Automatic invoice generation per order</li>
-        <li>GST calculation applied at the rate configured for each product category</li>
-        <li>Payment and refund tracking</li>
-        <li>Settlement reconciliation against marketplace payouts</li>
-        <li>Financial reports by period, channel, or product</li>
-      </ul>
+        <h2>Troubleshooting</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Likely cause</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Order stuck on New Order</td>
+              <td>Payment hasn't been confirmed by the marketplace yet</td>
+              <td>Wait for marketplace confirmation, or check the order directly on the source channel</td>
+            </tr>
+            <tr>
+              <td>Invoice missing GST details</td>
+              <td>Customer or business tax details are incomplete</td>
+              <td>Complete tax details under Finance Management before regenerating</td>
+            </tr>
+            <tr>
+              <td>Tracking number doesn't update status automatically</td>
+              <td>Courier integration isn't connected for that shipment method</td>
+              <td>Update status manually, or connect the courier under Marketplace Integration</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-      <h2>How GST is calculated</h2>
-      <p>La Poche applies the GST rate configured for a product's category to its selling price. For example:</p>
-      <table>
-        <thead><tr><th style="width:32%">Item</th><th>Amount</th></tr></thead>
-        <tbody>
-          <tr><td>Product Price</td><td>₹799</td></tr>
-          <tr><td>GST (18%)</td><td>₹143.82</td></tr>
-          <tr><td>Total Amount</td><td>₹942.82</td></tr>
-        </tbody>
-      </table>
+      <!-- 5. Marketplace Integration -->
+      <section class="chapter" id="ch5">
+        <div class="chapter-eyebrow">CHAPTER 05</div>
+        <h1>Marketplace integration</h1>
 
-      <h2>Generate an invoice</h2>
-      <ol class="steps">
-        <li>Open the order from Sales Management → Orders.</li>
-        <li>Confirm the customer's billing details and GSTIN (if applicable) are correct.</li>
-        <li>Select Generate Invoice from the order detail page.</li>
-        <li>Review the calculated tax breakdown before confirming.</li>
-        <li>Confirm — the invoice is generated and emailed to the customer automatically.</li>
-      </ol>
+        <h2>Overview</h2>
+        <p>La Poche connects to the marketplaces you already sell on, so products, stock, and orders stay in sync
+          without manual re-entry on each channel.</p>
 
-      <h2>Troubleshooting</h2>
-      <table>
-        <thead><tr><th>Issue</th><th>Likely cause</th><th>What to do</th></tr></thead>
-        <tbody>
-          <tr><td>GST amount looks incorrect</td><td>Product is assigned to the wrong tax category</td><td>Correct the product's category under Product Management, then regenerate</td></tr>
-          <tr><td>Settlement doesn't match expected payout</td><td>Marketplace commission or fees weren't accounted for</td><td>Check the settlement breakdown report for itemized deductions</td></tr>
-        </tbody>
-      </table>
-    </section>
+        <h2>Supported channels</h2>
+        <ul class="bullets">
+          <li>Amazon</li>
+          <li>Flipkart</li>
+          <li>Meesho</li>
+          <li>Shopify</li>
+          <li>WooCommerce</li>
+          <li>Own Website</li>
+        </ul>
 
-    <!-- 8. Reports -->
-    <section class="chapter" id="ch8">
-      <div class="chapter-eyebrow">CHAPTER 08</div>
-      <h1>Reports</h1>
+        <h2>Main features</h2>
+        <ul class="bullets">
+          <li>Product synchronization — push catalog changes to every connected channel</li>
+          <li>Inventory synchronization — stock levels update everywhere in near real time</li>
+          <li>Order synchronization — orders import automatically as they're placed</li>
+          <li>Price updates — change a price once, apply it everywhere or per channel</li>
+          <li>Settlement tracking — match marketplace payouts to individual orders</li>
+        </ul>
 
-      <h2>Overview</h2>
-      <p>Reports turn the day-to-day data in La Poche into something you can review weekly or monthly without digging through individual orders.</p>
+        <h2>Connect a new marketplace</h2>
+        <ol class="steps">
+          <li>Go to Marketplace Integration → Connect Channel.</li>
+          <li>Select the marketplace you want to connect from the supported list.</li>
+          <li>Authorize La Poche using the credentials or API key requested by that marketplace.</li>
+          <li>Choose whether to sync your full catalog immediately or select specific products.</li>
+          <li>Confirm the sync — initial sync time depends on catalog size and may take up to a few hours for large
+            catalogs.</li>
+        </ol>
 
-      <h2>Available reports</h2>
-      <table>
-        <thead><tr><th style="width:32%">Report</th><th>What it answers</th></tr></thead>
-        <tbody>
-          <tr><td>Sales Report</td><td>How much did we sell, and when?</td></tr>
-          <tr><td>Product Performance Report</td><td>Which products are selling well or underperforming?</td></tr>
-          <tr><td>Inventory Report</td><td>What's the current stock position across the catalog?</td></tr>
-          <tr><td>Settlement Report</td><td>Do marketplace payouts match what we expected?</td></tr>
-          <tr><td>Tax Report</td><td>What GST have we collected, for filing purposes?</td></tr>
-          <tr><td>Customer Report</td><td>Who's buying, and how often?</td></tr>
-        </tbody>
-      </table>
+        <div class="callout warn">
+          <div class="label">WARNING</div>
+          <p>Disconnecting a marketplace does not cancel orders already placed there. Process any open orders on that
+            channel before disconnecting.</p>
+        </div>
 
-      <h2>Generate a report</h2>
-      <ol class="steps">
-        <li>Open Reports and select the report type.</li>
-        <li>Choose a date range and, if relevant, filter by channel or category.</li>
-        <li>Select Generate. Reports covering a long date range or large catalog may take a few minutes.</li>
-        <li>Export to CSV or PDF, or view directly in the browser.</li>
-      </ol>
+        <h2>Troubleshooting</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Likely cause</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Channel shows "Sync failed"</td>
+              <td>Marketplace API credentials expired or were revoked</td>
+              <td>Reconnect the channel and re-authorize</td>
+            </tr>
+            <tr>
+              <td>Stock count differs between La Poche and a marketplace</td>
+              <td>Sync delay, or a manual stock edit made directly on the marketplace</td>
+              <td>Trigger a manual sync; avoid editing stock outside La Poche where possible</td>
+            </tr>
+            <tr>
+              <td>Orders from a channel aren't importing</td>
+              <td>Order sync is paused or the channel connection has expired</td>
+              <td>Check connection status and reconnect if needed</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-      <h2>Troubleshooting</h2>
-      <table>
-        <thead><tr><th>Issue</th><th>Likely cause</th><th>What to do</th></tr></thead>
-        <tbody>
-          <tr><td>Report is empty for a period with known sales</td><td>Date range or channel filter excludes the relevant data</td><td>Widen the date range or remove channel filters and regenerate</td></tr>
-          <tr><td>Export is taking longer than expected</td><td>Large date range or catalog size</td><td>Narrow the date range, or wait — exports for large ranges can take several minutes</td></tr>
-        </tbody>
-      </table>
-    </section>
+      <!-- 6. Inventory Management -->
+      <section class="chapter" id="ch6">
+        <div class="chapter-eyebrow">CHAPTER 06</div>
+        <h1>Inventory management</h1>
 
-    <!-- 9. User Management -->
-    <section class="chapter" id="ch9">
-      <div class="chapter-eyebrow">CHAPTER 09</div>
-      <h1>User management</h1>
+        <h2>Overview</h2>
+        <p>The Inventory module is the single source of truth for stock — every sale, return, and manual adjustment
+          updates the same count, which is then reflected across every connected marketplace.</p>
 
-      <h2>Overview</h2>
-      <p>Administrators control who has access to La Poche and what each person can see and do, through roles.</p>
+        <h2>Main features</h2>
+        <ul class="bullets">
+          <li>Add and adjust inventory manually or via bulk upload</li>
+          <li>View a full history of stock movements per product</li>
+          <li>Configure low-stock alerts per product</li>
+          <li>Generate inventory reports for any date range</li>
+        </ul>
 
-      <h2>Main features</h2>
-      <ul class="bullets">
-        <li>Create and deactivate user accounts</li>
-        <li>Assign predefined roles to control access</li>
-        <li>Reset passwords on a user's behalf</li>
-        <li>Configure granular permissions per role</li>
-      </ul>
+        <h2>Inventory status</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:24%">Status</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>In Stock</td>
+              <td>Product is available and visible for sale on connected channels</td>
+            </tr>
+            <tr>
+              <td>Low Stock</td>
+              <td>Stock has fallen below the reorder threshold you've set</td>
+            </tr>
+            <tr>
+              <td>Out of Stock</td>
+              <td>Product is unavailable and automatically hidden from sale</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <h2>User roles</h2>
-      <table>
-        <thead><tr><th style="width:26%">Role</th><th>Typical access</th></tr></thead>
-        <tbody>
-          <tr><td>Administrator</td><td>Full access, including user management and system configuration</td></tr>
-          <tr><td>Sales Executive</td><td>Order processing, customer records, and sales reports</td></tr>
-          <tr><td>Operations Executive</td><td>Order fulfillment, shipping, and returns</td></tr>
-          <tr><td>Finance Executive</td><td>Invoicing, payments, settlements, and financial reports</td></tr>
-          <tr><td>Warehouse Executive</td><td>Inventory and stock management</td></tr>
-        </tbody>
-      </table>
+        <h2>Set a low-stock alert</h2>
+        <ol class="steps">
+          <li>Open Inventory Management and select the product.</li>
+          <li>Open Stock Settings for that product.</li>
+          <li>Enter a reorder threshold — the stock level that should trigger a Low Stock alert.</li>
+          <li>Choose how you want to be notified: dashboard alert, email, or both.</li>
+          <li>Save. The product moves to Low Stock automatically once stock crosses the threshold.</li>
+        </ol>
 
-      <h2>Create a new user</h2>
-      <ol class="steps">
-        <li>Go to User Management → Add User.</li>
-        <li>Enter the user's name and work email.</li>
-        <li>Assign a role from the table above — this determines which modules they can see.</li>
-        <li>Save. The user receives an email invitation to set their password.</li>
-      </ol>
+        <h2>Troubleshooting</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Likely cause</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>No low-stock alert received despite low stock</td>
+              <td>Threshold not configured for that product</td>
+              <td>Set a reorder threshold using the steps above</td>
+            </tr>
+            <tr>
+              <td>Stock count seems wrong after a return</td>
+              <td>Return hasn't been processed through Sales Management yet</td>
+              <td>Process the return in the order record; stock updates automatically</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-      <div class="callout">
-        <div class="label">TIP</div>
-        <p>Assign the most restrictive role that still lets someone do their job. It's easier to grant additional access later than to audit over-permissioned accounts.</p>
-      </div>
+      <!-- 7. Finance Management -->
+      <section class="chapter" id="ch7">
+        <div class="chapter-eyebrow">CHAPTER 07</div>
+        <h1>Finance management</h1>
 
-      <h2>Troubleshooting</h2>
-      <table>
-        <thead><tr><th>Issue</th><th>Likely cause</th><th>What to do</th></tr></thead>
-        <tbody>
-          <tr><td>New user can't see a module they need</td><td>Assigned role doesn't include that module</td><td>Adjust their role or configure a custom permission</td></tr>
-          <tr><td>Invitation email never arrived</td><td>Email address typo, or it landed in spam</td><td>Confirm the email address and resend the invitation</td></tr>
-        </tbody>
-      </table>
-    </section>
+        <h2>Overview</h2>
+        <p>The Finance module handles everything money-related after an order is placed: invoicing, tax, payment
+          tracking, refunds, and reconciling marketplace settlements.</p>
 
-    <!-- 10. Support -->
-    <section class="chapter" id="ch10">
-      <div class="chapter-eyebrow">CHAPTER 10</div>
-      <h1>Support</h1>
+        <h2>Main features</h2>
+        <ul class="bullets">
+          <li>Automatic invoice generation per order</li>
+          <li>GST calculation applied at the rate configured for each product category</li>
+          <li>Payment and refund tracking</li>
+          <li>Settlement reconciliation against marketplace payouts</li>
+          <li>Financial reports by period, channel, or product</li>
+        </ul>
 
-      <h2>Overview</h2>
-      <p>If something in this guide doesn't match what you're seeing, or you've hit an issue not covered in a Troubleshooting section, contact support directly.</p>
+        <h2>How GST is calculated</h2>
+        <p>La Poche applies the GST rate configured for a product's category to its selling price. For example:</p>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:32%">Item</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Product Price</td>
+              <td>₹799</td>
+            </tr>
+            <tr>
+              <td>GST (18%)</td>
+              <td>₹143.82</td>
+            </tr>
+            <tr>
+              <td>Total Amount</td>
+              <td>₹942.82</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <h2>Contact</h2>
-      <table>
-        <thead><tr><th style="width:26%">Channel</th><th>Details</th></tr></thead>
-        <tbody>
-          <tr><td>Email</td><td>support@lapoche.com</td></tr>
-          <tr><td>Website</td><td>www.lapoche.com</td></tr>
-          <tr><td>Business Hours</td><td>Monday to Saturday, 09:00 AM – 06:00 PM</td></tr>
-        </tbody>
-      </table>
+        <h2>Generate an invoice</h2>
+        <ol class="steps">
+          <li>Open the order from Sales Management → Orders.</li>
+          <li>Confirm the customer's billing details and GSTIN (if applicable) are correct.</li>
+          <li>Select Generate Invoice from the order detail page.</li>
+          <li>Review the calculated tax breakdown before confirming.</li>
+          <li>Confirm — the invoice is generated and emailed to the customer automatically.</li>
+        </ol>
 
-      <div class="callout">
-        <div class="label">BEFORE YOU CONTACT SUPPORT</div>
-        <p>Have your account email, the affected order or product ID, and a screenshot of the issue ready — this is almost always the first thing support will ask for, and having it ready cuts resolution time significantly.</p>
-      </div>
-    </section>
+        <h2>Troubleshooting</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Likely cause</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>GST amount looks incorrect</td>
+              <td>Product is assigned to the wrong tax category</td>
+              <td>Correct the product's category under Product Management, then regenerate</td>
+            </tr>
+            <tr>
+              <td>Settlement doesn't match expected payout</td>
+              <td>Marketplace commission or fees weren't accounted for</td>
+              <td>Check the settlement breakdown report for itemized deductions</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-    <footer class="guide-footer">
-      <span>La Poche — User Guide</span>
-      <span>v2.0 · June 2026</span>
-    </footer>
+      <!-- 8. Reports -->
+      <section class="chapter" id="ch8">
+        <div class="chapter-eyebrow">CHAPTER 08</div>
+        <h1>Reports</h1>
 
-  </main>
-</div>
+        <h2>Overview</h2>
+        <p>Reports turn the day-to-day data in La Poche into something you can review weekly or monthly without digging
+          through individual orders.</p>
 
-<script>
-  const links = document.querySelectorAll('nav.toc a');
-  const sections = document.querySelectorAll('section.chapter');
-  const setActive = () => {
-    let current = sections[0].id;
-    const scrollPos = window.scrollY + 120;
-    sections.forEach(sec => {
-      if (sec.offsetTop <= scrollPos) current = sec.id;
-    });
-    links.forEach(l => {
-      l.classList.toggle('active', l.getAttribute('href') === '#' + current);
-    });
-  };
-  window.addEventListener('scroll', setActive);
-  setActive();
-</script>
+        <h2>Available reports</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:32%">Report</th>
+              <th>What it answers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sales Report</td>
+              <td>How much did we sell, and when?</td>
+            </tr>
+            <tr>
+              <td>Product Performance Report</td>
+              <td>Which products are selling well or underperforming?</td>
+            </tr>
+            <tr>
+              <td>Inventory Report</td>
+              <td>What's the current stock position across the catalog?</td>
+            </tr>
+            <tr>
+              <td>Settlement Report</td>
+              <td>Do marketplace payouts match what we expected?</td>
+            </tr>
+            <tr>
+              <td>Tax Report</td>
+              <td>What GST have we collected, for filing purposes?</td>
+            </tr>
+            <tr>
+              <td>Customer Report</td>
+              <td>Who's buying, and how often?</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Generate a report</h2>
+        <ol class="steps">
+          <li>Open Reports and select the report type.</li>
+          <li>Choose a date range and, if relevant, filter by channel or category.</li>
+          <li>Select Generate. Reports covering a long date range or large catalog may take a few minutes.</li>
+          <li>Export to CSV or PDF, or view directly in the browser.</li>
+        </ol>
+
+        <h2>Troubleshooting</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Likely cause</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Report is empty for a period with known sales</td>
+              <td>Date range or channel filter excludes the relevant data</td>
+              <td>Widen the date range or remove channel filters and regenerate</td>
+            </tr>
+            <tr>
+              <td>Export is taking longer than expected</td>
+              <td>Large date range or catalog size</td>
+              <td>Narrow the date range, or wait — exports for large ranges can take several minutes</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 9. User Management -->
+      <section class="chapter" id="ch9">
+        <div class="chapter-eyebrow">CHAPTER 09</div>
+        <h1>User management</h1>
+
+        <h2>Overview</h2>
+        <p>Administrators control who has access to La Poche and what each person can see and do, through roles.</p>
+
+        <h2>Main features</h2>
+        <ul class="bullets">
+          <li>Create and deactivate user accounts</li>
+          <li>Assign predefined roles to control access</li>
+          <li>Reset passwords on a user's behalf</li>
+          <li>Configure granular permissions per role</li>
+        </ul>
+
+        <h2>User roles</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:26%">Role</th>
+              <th>Typical access</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Administrator</td>
+              <td>Full access, including user management and system configuration</td>
+            </tr>
+            <tr>
+              <td>Sales Executive</td>
+              <td>Order processing, customer records, and sales reports</td>
+            </tr>
+            <tr>
+              <td>Operations Executive</td>
+              <td>Order fulfillment, shipping, and returns</td>
+            </tr>
+            <tr>
+              <td>Finance Executive</td>
+              <td>Invoicing, payments, settlements, and financial reports</td>
+            </tr>
+            <tr>
+              <td>Warehouse Executive</td>
+              <td>Inventory and stock management</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Create a new user</h2>
+        <ol class="steps">
+          <li>Go to User Management → Add User.</li>
+          <li>Enter the user's name and work email.</li>
+          <li>Assign a role from the table above — this determines which modules they can see.</li>
+          <li>Save. The user receives an email invitation to set their password.</li>
+        </ol>
+
+        <div class="callout">
+          <div class="label">TIP</div>
+          <p>Assign the most restrictive role that still lets someone do their job. It's easier to grant additional
+            access later than to audit over-permissioned accounts.</p>
+        </div>
+
+        <h2>Troubleshooting</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Likely cause</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>New user can't see a module they need</td>
+              <td>Assigned role doesn't include that module</td>
+              <td>Adjust their role or configure a custom permission</td>
+            </tr>
+            <tr>
+              <td>Invitation email never arrived</td>
+              <td>Email address typo, or it landed in spam</td>
+              <td>Confirm the email address and resend the invitation</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 10. Support -->
+      <section class="chapter" id="ch10">
+        <div class="chapter-eyebrow">CHAPTER 10</div>
+        <h1>Support</h1>
+
+        <h2>Overview</h2>
+        <p>If something in this guide doesn't match what you're seeing, or you've hit an issue not covered in a
+          Troubleshooting section, contact support directly.</p>
+
+        <h2>Contact</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:26%">Channel</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Email</td>
+              <td>support@lapoche.com</td>
+            </tr>
+            <tr>
+              <td>Website</td>
+              <td>www.lapoche.com</td>
+            </tr>
+            <tr>
+              <td>Business Hours</td>
+              <td>Monday to Saturday, 09:00 AM – 06:00 PM</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <div class="label">BEFORE YOU CONTACT SUPPORT</div>
+          <p>Have your account email, the affected order or product ID, and a screenshot of the issue ready — this is
+            almost always the first thing support will ask for, and having it ready cuts resolution time significantly.
+          </p>
+        </div>
+      </section>
+
+      <footer class="guide-footer">
+        <span>La Poche — User Guide</span>
+        <span>v2.0 · June 2026</span>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    const links = document.querySelectorAll('nav.toc a');
+    const sections = document.querySelectorAll('section.chapter');
+    const setActive = () => {
+      let current = sections[0].id;
+      const scrollPos = window.scrollY + 120;
+      sections.forEach(sec => {
+        if (sec.offsetTop <= scrollPos) current = sec.id;
+      });
+      links.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+      });
+    };
+    window.addEventListener('scroll', setActive);
+    setActive();
+  </script>
 
 </body>
+
 </html>
